@@ -12,7 +12,7 @@ from collections import Counter
 import rdkit
 from rdkit import Chem
 
-from . import *
+from . import break_bonds, neutralize, rules, unsalt
 
 ########################################################################
 # 

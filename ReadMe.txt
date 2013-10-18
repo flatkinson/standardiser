@@ -1,7 +1,3 @@
-source setup.sh
+See the IPython Notebooks in docs/ for more information on what this tools does and how it can be used.
 
-python demo.py
-
-ipython -i debug.py # %run -i demo.py
-
-cd test && source run.sh
+The program standardiser.py is a simple driver program intended for larger test sets.

@@ -38,7 +38,7 @@ for record in csv.DictReader(salts_fh, delimiter="\t"):
 
     smiles, name = record["SMILES"], record["name"]
 
-    if re.match("\s*(#|$)", smiles): continue # NB cludge: assumes SMILES is in first column
+    if re.match("\s*(#|$)", smiles): continue # NB assumes SMILES is in first column
 
     mol = Chem.MolFromSmiles(smiles)
 
@@ -51,8 +51,6 @@ for record in csv.DictReader(salts_fh, delimiter="\t"):
     Chem.RemoveStereochemistry(mol)
 
     key = Chem.MolToInchi(mol)
-
-    ### key = Chem.MolToSmiles(mol, isomericSmiles=False, canonical=True)
 
     salts[key] = {'SMILES': smiles, 'name': name}
 
@@ -79,8 +77,6 @@ def is_salt(mol):
     Chem.RemoveStereochemistry(mol)
 
     key = Chem.MolToInchi(mol)
-
-    ### key = Chem.MolToSmiles(mol, isomericSmiles=False, canonical=True)
 
     if key in salts:
 

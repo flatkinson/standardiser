@@ -146,7 +146,9 @@ def apply_rule(mol, rule, verbose=False):
 
 ######
 
-def apply(mol):
+def apply(mol, first_only=False, verbose=False):
+
+    logger.debug("apply> mol = '{}'".format(Chem.MolToSmiles(mol)))
 
     for n_pass in range(1, max_passes+1):
 
@@ -156,15 +158,19 @@ def apply(mol):
 
         for rule in rule_set:
 
-	    product = apply_rule(mol, rule)
+	    product = apply_rule(mol, rule, verbose)
 
 	    if product:
 
-                logger.debug("apply> hit for rule {} ({})...".format(rule["n"], rule["description"]))
+                logger.info("rule {} '{}' applied on pass {}".format(rule["n"], rule["description"], n_pass))
 
                 mol = product
 
+                if first_only: break
+
                 n_hits_for_pass += 1
+
+        if product and first_only: break
 
         logger.debug("...total of {} hits in pass: {}".format(n_hits_for_pass, "will continue..." if n_hits_for_pass else "finished."))
 
