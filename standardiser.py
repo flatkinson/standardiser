@@ -5,7 +5,7 @@ import os, sys, argparse, logging
 
 import copy
 
-from collections import Counter, namedtuple
+#@ from collections import Counter
 
 from rdkit import Chem
 
@@ -20,21 +20,11 @@ script_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 
 ######
 
-# Option and Argument defaults...
-
-default = argparse.Namespace()
-
-default.verbose = False
-
-default.arg = 0
-
-######
-
 # Options and arguments...
 
 argparser = argparse.ArgumentParser(description="Standardize compounds")
 
-argparser.add_argument("-V", "--verbose", action="store_const", const=not default.verbose, default=default.verbose, help="toggle verbose logging [default: '{}']".format(default.verbose))
+argparser.add_argument("-V", "--verbose", action="store_true", help="enable verbose logging")
 
 argparser.add_argument("infile", help="Input file (SDF or SMILES)")
 
@@ -46,33 +36,33 @@ config = argparser.parse_args()
 
 logging.basicConfig(level=logging.DEBUG if config.verbose else logging.INFO, format="[%(asctime)s %(levelname)-8s] %(message)s", datefmt="%Y/%b/%d %H:%M:%S")
 
-### RDLogger.logger().setLevel(RDLogger.DEBUG)
-
 ########################################################################
 
 # Initialise...
 
 error_names = standardise.errors.keys()
 
-counts = Counter({name: 0 for name in error_names + ["read", "standardised"]})
+#@ counts = Counter({name: 0 for name in error_names + ["read", "standardised"]})
+counts = dict((name, 0) for name in error_names + ["read", "standardised"]) # python2.6-compatible
 
 # Input type...
 
 input_type = os.path.splitext(config.infile)[1] # sdf or smi
 
-logging.info("Input type = '{}'".format(input_type))
+logging.info("Input type = '{type}'".format(type=input_type))
 
 if input_type == ".sdf":
 
     # Read/write sdf...
 
-    outfile = {name: open(name + ".sdf", "w") for name in error_names + ["standardised"]}
+#@    outfile = {name: open(name + ".sdf", "w") for name in error_names + ["standardised"]}
+    outfile = dict((name, open(name + ".sdf", "w")) for name in error_names + ["standardised"]) # python2.6-compatible
 
     for sdf in standardise.SDF.readFile(open(config.infile)):
 
         counts["read"] += 1
 
-        logging.info(">>> Starting mol '{}'...".format(sdf.name))
+        logging.info(">>> Starting mol '{name}'...".format(name=sdf.name))
 
         try:
 
@@ -80,7 +70,7 @@ if input_type == ".sdf":
 
         except standardise.StandardiseException as e:
 
-            logging.warn(">>> {} for '{}'".format(standardise.errors[e.name], sdf.name))
+            logging.warn(">>> {err} for '{name}'".format(err=standardise.errors[e.name], name=sdf.name))
 
             counts[e.name] += 1
 
@@ -88,17 +78,18 @@ if input_type == ".sdf":
 
             continue
 
-        logging.info("Mol '{}' OK".format(sdf.name))
+        logging.info("Mol '{name}' OK".format(name=sdf.name))
 
         counts["standardised"] += 1
 
-        outfile["standardised"].write("{}>  <n>\n{}\n\n$$$$\n".format(parent, counts["read"]))
+        outfile["standardised"].write("{molblock}>  <n>\n{n_read}\n\n$$$$\n".format(molblock=parent, n_read=counts["read"]))
 
 else: # input_type == '.smi'
 
     # Read/write smi...
 
-    outfile = {name: open(name + ".smi", "w") for name in error_names + ["standardised"]}
+    #@ outfile = {name: open(name + ".smi", "w") for name in error_names + ["standardised"]}
+    outfile = dict((name, open(name + ".smi", "w")) for name in error_names + ["standardised"])  # python2.6-compatible
 
     for original in open(config.infile):
 
@@ -106,7 +97,7 @@ else: # input_type == '.smi'
 
         counts["read"] += 1
 
-        logging.info(">>> Starting mol '{}'...".format(name))
+        logging.info(">>> Starting mol '{name}'...".format(name=name))
 
         try:
 
@@ -114,7 +105,7 @@ else: # input_type == '.smi'
 
         except standardise.StandardiseException as e:
 
-            logging.warn(">>> {} for '{}'".format(standardise.errors[e.name], name))
+            logging.warn(">>> {err} for '{name}'".format(err=standardise.errors[e.name], name=name))
 
             counts[e.name] += 1
 
@@ -122,11 +113,11 @@ else: # input_type == '.smi'
 
             continue
 
-        logging.info("Mol '{}' OK".format(name))
+        logging.info("Mol '{name}' OK".format(name=name))
 
         counts["standardised"] += 1
 
-        outfile["standardised"].write("{}\t{}\n".format(parent, name))
+        outfile["standardised"].write("{smiles}\t{name}\n".format(smiles=parent, name=name))
 
 logging.info("Finished: {read} read, {not_built} not built, {no_non_salt} no non-salt, {multi_component} multi-component, {standardised} standardised".format(**counts))
 

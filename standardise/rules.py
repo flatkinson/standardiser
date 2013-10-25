@@ -6,11 +6,11 @@
 
 from __future__ import print_function
 
-import logging; logger = logging.getLogger(__name__)
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 import re
-from copy import deepcopy
 
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -32,7 +32,7 @@ max_passes = 10
 
 rules_fh = open(os.path.join(os.path.dirname(__file__), data_dir_name, rules_file_name))
 
-rule_set = [{"n": n, "description": x[1], "SMARTS": x[0], "rxn": AllChem.ReactionFromSmarts(x[0])} for n, x in enumerate([x[0] for x in [re.findall("^\s*([^#]\S+)\t+(.*?)\s*$", line) for line in rules_fh] if x], 1)]
+rule_set = [{"n": n, "description": x[1], "SMARTS": x[0], "rxn": AllChem.ReactionFromSmarts(x[0])} for n, x in enumerate([x[0] for x in [re.findall(r"^\s*([^#]\S+)\t+(.*?)\s*$", line) for line in rules_fh] if x], 1)]
 
 ########################################################################
 
@@ -52,7 +52,7 @@ def apply_old(mol):
 
     for n_pass in range(1, max_passes+1):
 
-        logger.debug("starting pass {}...".format(n_pass))
+        logger.debug("starting pass {n}...".format(n=n_pass))
 
         n_hits_for_pass = 0
 
@@ -68,26 +68,26 @@ def apply_old(mol):
 
                 new_mol = products[0][0]
 
-		try:
-			Chem.SanitizeMol(new_mol)
+                try:
+                    Chem.SanitizeMol(new_mol)
 
-		except ValueError as e:
+                except ValueError as e:
 
-			logger.debug("SanitizeMol failed for rule {} ({}): '{}'".format(rule['n'], rule['description'], e.message.rstrip()))
+                    logger.debug("SanitizeMol failed for rule {n} ({name}): '{err}'".format(n=rule['n'], name=rule['description'], err=e.message.rstrip()))
 
-			break
-	
-		mol = new_mol
+                    break
+
+                mol = new_mol
 
                 n_hits_for_rule += 1
 
             if n_hits_for_rule:
-                
-                logger.debug("rule {} ({}) applied {} time(s) on pass {}".format(rule['n'], rule['description'], n_hits_for_rule, n_pass))
+
+                logger.debug("rule {n} ({name}) applied {n_hits} time(s) on pass {n_pass}".format(n=rule['n'], name=rule['description'], n_hits=n_hits_for_rule, n_pass=n_pass))
 
                 n_hits_for_pass += n_hits_for_rule
 
-        logger.debug("...total of {} applications in pass: {}".format(n_hits_for_pass, "will continue..." if n_hits_for_pass else "finished."))
+        logger.debug("...total of {n_hits} applications in pass: {action}".format(n_hits=n_hits_for_pass, action="will continue..." if n_hits_for_pass else "finished."))
 
         if n_hits_for_pass == 0: break
 
@@ -101,45 +101,45 @@ def apply_old(mol):
 
 def apply_rule(mol, rule, verbose=False):
 
-    if verbose: logger.debug("apply_rule> applying rule {} ({})...".format(rule["n"], rule["description"]))
+    if verbose: logger.debug("apply_rule> applying rule {n} ({name})...".format(n=rule["n"], name=rule["description"]))
 
     mols = [mol]
-    
+
     changed = False
 
     for n_pass in range(1, max_passes+1):
-        
-        if verbose: logging.debug("apply_rule> starting pass {}...".format(n_pass))
-        
+
+        if verbose: logging.debug("apply_rule> starting pass {n_pass}...".format(n_pass=n_pass))
+
         products = {}
-        
+
         for mol in mols:
-    
+
             for product in [x[0] for x in rule["rxn"].RunReactants((mol,))]:
-                
+
                 try:
                     Chem.SanitizeMol(product)
                 except ValueError as error:
                     if error.message.startswith("Sanitization error"): continue
-        
+
                 products.setdefault(Chem.MolToSmiles(product, isomericSmiles=True), product)
-        
+
         if products:
 
-	    changed = True
-            
-            if (verbose): logging.debug("apply_rule> there are {} products: will continue".format(len(products.values())))
-            
+            changed = True
+
+            if (verbose): logging.debug("apply_rule> there are {n} products: will continue".format(n=len(products.values())))
+
             mols = products.values()
-            
+
         else:
-            
+
             if (verbose): logging.debug("apply_rule> there were no products: will return")
 
             return mols[0] if changed else None
-        
-    logging.debug("apply_rule {} ({})> maximum number of passes reached; current number of mols is {}".format(rule["n"], rule["description"], len(mols)))
-    
+
+    logging.debug("apply_rule {n} ({name})> maximum number of passes reached; current number of mols is {n_mols}".format(n=rule["n"], name=rule["description"], n_mols=len(mols)))
+
     return mols[0]
 
 # apply_rule
@@ -148,21 +148,21 @@ def apply_rule(mol, rule, verbose=False):
 
 def apply(mol, first_only=False, verbose=False):
 
-    logger.debug("apply> mol = '{}'".format(Chem.MolToSmiles(mol)))
+    logger.debug("apply> mol = '{smiles}'".format(smiles=Chem.MolToSmiles(mol)))
 
     for n_pass in range(1, max_passes+1):
 
-        logger.debug("apply> starting pass {}...".format(n_pass))
+        logger.debug("apply> starting pass {n_pass}...".format(n_pass=n_pass))
 
         n_hits_for_pass = 0
 
         for rule in rule_set:
 
-	    product = apply_rule(mol, rule, verbose)
+            product = apply_rule(mol, rule, verbose)
 
-	    if product:
+            if product:
 
-                logger.info("rule {} '{}' applied on pass {}".format(rule["n"], rule["description"], n_pass))
+                logger.info("rule {n} ({name}) applied on pass {n_pass}".format(n=rule["n"], name=rule["description"], n_pass=n_pass))
 
                 mol = product
 
@@ -172,7 +172,7 @@ def apply(mol, first_only=False, verbose=False):
 
         if product and first_only: break
 
-        logger.debug("...total of {} hits in pass: {}".format(n_hits_for_pass, "will continue..." if n_hits_for_pass else "finished."))
+        logger.debug("...total of {n_hits} hits in pass: {action}".format(n_hits=n_hits_for_pass, action="will continue..." if n_hits_for_pass else "finished."))
 
         if n_hits_for_pass == 0: break
 
@@ -196,7 +196,7 @@ def demo(old_mol):
 
             new_mol = products[0][0]
 
-            logger.info("rule {} ('{}') applied".format(rule['n'], rule['description']))
+            logger.info("rule {n} ({name}) applied".format(n=rule['n'], name=rule['description']))
 
             break
 
@@ -217,7 +217,9 @@ def demo(old_mol):
     old_match = old_mol.GetSubstructMatch(Chem.MolFromSmarts(old_pat))
     new_match = new_mol.GetSubstructMatch(Chem.MolFromSmarts(new_pat))
 
-    coord_map = {new_idx: rdGeometry.Point2D(conf.GetAtomPosition(old_idx).x, conf.GetAtomPosition(old_idx).y) for old_idx, new_idx in zip(old_match, new_match)}
+    #@ coord_map = {new_idx: rdGeometry.Point2D(conf.GetAtomPosition(old_idx).x, conf.GetAtomPosition(old_idx).y) for old_idx, new_idx in zip(old_match, new_match)}
+
+    coord_map = dict((new_idx, rdGeometry.Point2D(conf.GetAtomPosition(old_idx).x, conf.GetAtomPosition(old_idx).y)) for old_idx, new_idx in zip(old_match, new_match))  # python2.6-compatible
 
     AllChem.Compute2DCoords(new_mol, clearConfs=True, coordMap=coord_map, canonOrient=False)
 

@@ -6,7 +6,8 @@
 
 from __future__ import print_function
 
-import logging; logger = logging.getLogger(__name__)
+import logging
+logger = logging.getLogger(__name__)
 
 from collections import defaultdict
 
@@ -16,7 +17,7 @@ from rdkit import Chem
 
 # Module configuration...
 
-bonds_to_break = [("[Li,Na,K,Mg,Ca]-[#7,#8,#16]", 1), ("[Mg,Ca]=N", 2)] # SMARTS pattern, charge increment
+bonds_to_break = [("[Li,Na,K,Mg,Ca]-[#7,#8,#16]", 1), ("[Mg,Ca]=N", 2)]  # SMARTS pattern, charge increment
 
 ########################################################################
 
@@ -30,7 +31,7 @@ def apply(mol):
 
     charge_added = defaultdict(int)
 
-    n = 0
+    n_broken = 0
 
     for pattern, charge_incr in bonds_to_break:
 
@@ -42,7 +43,7 @@ def apply(mol):
 
             ed_mol.RemoveBond(i, j)
 
-            n += 1
+            n_broken += 1
 
         mol = ed_mol.GetMol()
 
@@ -60,9 +61,9 @@ def apply(mol):
 
     Chem.SanitizeMol(mol)
 
-    logger.debug("Broke {} bonds to Group I and II metals".format(n))
+    logger.debug("Broke {n} bonds to Group I and II metals".format(n=n_broken))
 
-    return mol ###, charge_added
+    return mol  # , charge_added
 
 # apply
 

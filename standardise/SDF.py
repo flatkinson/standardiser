@@ -1,7 +1,6 @@
 """SD file  utilities"""
 
 import re
-from rdkit import Chem
 
 def readFile(filename):
 

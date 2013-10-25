@@ -7,40 +7,40 @@ from __future__ import print_function
 import logging
 logger = logging.getLogger(__name__)
 
-from collections import Counter
-
 import rdkit
 from rdkit import Chem
 
 from . import break_bonds, neutralize, rules, unsalt
 
 ########################################################################
-# 
+#
 # Module configuration...
-# 
+#
 
 errors = {
-	"not_built":       "RDKit could not build mol",
-	"no_non_salt":     "No non-salt/solvate components",
-	"multi_component": "Multiple non-salt/solvate components"
+    "not_built":       "RDKit could not build mol",
+    "no_non_salt":     "No non-salt/solvate components",
+    "multi_component": "Multiple non-salt/solvate components"
 }
 
 ########################################################################
-# 
+#
 # Module initialization...
-# 
+#
 
 ########################################################################
 
 class StandardiseException(Exception):
 
-	def __init__(self, name):
+    def __init__(self, name):
 
-		self.name = name
+        self.name = name
 
-		self.message = errors[name]
+        self.message = errors[name]
 
-		self.args = (errors[name], )
+        self.args = (errors[name], )
+
+# StandardiseException
 
 ######
 
@@ -65,14 +65,14 @@ def apply(input_mol):
             if not mol:
 
                 raise StandardiseException("not_built")
-            
+
             else:
 
                 input_type = 'smi'
         else:
 
             input_type = 'sdf'
-    
+
     ######
 
     # Get disconnected fragments...
@@ -81,9 +81,9 @@ def apply(input_mol):
 
     mol = break_bonds.apply(mol)
 
-    for frag in Chem.GetMolFrags(mol, asMols=True):
+    for n, frag in enumerate(Chem.GetMolFrags(mol, asMols=True), 1):
 
-        logger.debug("Starting fragment '{}'...".format(Chem.MolToSmiles(frag)))
+        logger.debug("Starting fragment {n} '{smi}'...".format(n=n, smi=Chem.MolToSmiles(frag)))
 
         logger.debug("1) Check for non-organic elements...")
 
@@ -123,15 +123,15 @@ def apply(input_mol):
 
     # Return parent in same format as input...
 
-    if    input_type == 'mol':
+    if input_type == 'mol':
 
         return parent
 
-    elif  input_type == 'sdf':
+    elif input_type == 'sdf':
 
         return Chem.MolToMolBlock(parent)
 
-    else: # input_type == 'smi'
+    else:  # input_type == 'smi'
 
         return Chem.MolToSmiles(parent, isomericSmiles=True)
 
