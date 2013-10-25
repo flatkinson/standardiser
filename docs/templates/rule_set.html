@@ -1,0 +1,6 @@
+<table>
+	<tr> <th>Description</th> <th>SMARTS</th> </tr>
+	{% for rule in rule_set %}
+	    <tr> <td>{{rule["description"]}}</td> <td>{{rule["SMARTS"]}}</td> </tr>
+	{% endfor %}
+</table>
