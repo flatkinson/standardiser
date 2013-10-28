@@ -1,3 +1,5 @@
+# Setup for the IPython Notebooks
+
 import os, sys
 import logging
 from IPython.display import HTML
