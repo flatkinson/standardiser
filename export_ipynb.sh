@@ -2,7 +2,7 @@
 
 file=index.html
 
-echo "<ul>" >> ${file}
+echo "<ul>" > ${file}
 
 for ipynb in *.ipynb
 do
