@@ -22,7 +22,7 @@ script_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 
 # Options and arguments...
 
-argparser = argparse.ArgumentParser(description="Standardize compounds")
+argparser = argparse.ArgumentParser(description="Standardise compounds")
 
 argparser.add_argument("-V", "--verbose", action="store_true", help="enable verbose logging")
 

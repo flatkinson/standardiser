@@ -1,4 +1,6 @@
-import urllib
+import requests
+import logging
+logging.getLogger("requests").setLevel(logging.WARNING)
 import StringIO
 from IPython.display import HTML
 from jinja2 import Template
@@ -20,8 +22,6 @@ def img(mol, match):
 
     return img
 
-# img_tag
-
 def demo(smiles):
 
     mol = Chem.MolFromSmiles(smiles)
@@ -30,10 +30,10 @@ def demo(smiles):
 
     return HTML(Template(open("templates/old_vs_new.html").read()).render(old_img=img(old_mol, old_match), new_img=img(new_mol, new_match)))
 
-# demo
-
 def s2m(smiles):
 
     return Chem.MolFromSmiles(smiles)
 
-# s2m
+def i2s(chembl_id):
+
+    return str(requests.get("http://www.ebi.ac.uk/chemblws/compounds/{}.json".format(chembl_id)).json()['compound']['smiles'])

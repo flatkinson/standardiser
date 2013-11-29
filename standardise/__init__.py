@@ -1,6 +1,6 @@
 __all__ = [
     "break_bonds",
-    "neutralize",
+    "neutralise",
     "rules",
     "unsalt",
     "SDF"

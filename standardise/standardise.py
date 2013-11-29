@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 import rdkit
 from rdkit import Chem
 
-from . import break_bonds, neutralize, rules, unsalt
+from . import break_bonds, neutralise, rules, unsalt
 
 ########################################################################
 #
@@ -89,17 +89,17 @@ def apply(input_mol):
 
         if unsalt.is_nonorganic(frag): continue
 
-        logger.debug("2) Attempting to neutralize (first pass)...")
+        logger.debug("2) Attempting to neutralise (first pass)...")
 
-        frag = neutralize.apply(frag)
+        frag = neutralise.apply(frag)
 
         logger.debug("3) Applying rules...")
 
         frag = rules.apply(frag)
 
-        logger.debug("4) Attempting to neutralize (second pass)...")
+        logger.debug("4) Attempting to neutralise (second pass)...")
 
-        frag = neutralize.apply(frag)
+        frag = neutralise.apply(frag)
 
         logger.debug("5) Checking if frag is a salt/solvate...")
 

@@ -50,7 +50,7 @@ for record in csv.DictReader(salts_fh, delimiter="\t"):
 
     Chem.RemoveStereochemistry(mol)
 
-    key = Chem.MolToInchi(mol)
+    key = Chem.MolToInchi(mol) if Chem.INCHI_AVAILABLE else Chem.MolToSmiles(mol)
 
     salts[key] = {'SMILES': smiles, 'name': name}
 
@@ -76,7 +76,7 @@ def is_salt(mol):
 
     Chem.RemoveStereochemistry(mol)
 
-    key = Chem.MolToInchi(mol)
+    key = Chem.MolToInchi(mol) if Chem.INCHI_AVAILABLE else Chem.MolToSmiles(mol)
 
     if key in salts:
 

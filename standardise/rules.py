@@ -73,7 +73,7 @@ def apply_old(mol):
 
                 except ValueError as e:
 
-                    logger.debug("SanitizeMol failed for rule {n} ({name}): '{err}'".format(n=rule['n'], name=rule['description'], err=e.message.rstrip()))
+                    logger.debug("SanitizeMol failed for rule {n} '{name}': '{err}'".format(n=rule['n'], name=rule['description'], err=e.message.rstrip()))
 
                     break
 
@@ -83,7 +83,7 @@ def apply_old(mol):
 
             if n_hits_for_rule:
 
-                logger.debug("rule {n} ({name}) applied {n_hits} time(s) on pass {n_pass}".format(n=rule['n'], name=rule['description'], n_hits=n_hits_for_rule, n_pass=n_pass))
+                logger.debug("rule {n} '{name}' applied {n_hits} time(s) on pass {n_pass}".format(n=rule['n'], name=rule['description'], n_hits=n_hits_for_rule, n_pass=n_pass))
 
                 n_hits_for_pass += n_hits_for_rule
 
@@ -101,7 +101,7 @@ def apply_old(mol):
 
 def apply_rule(mol, rule, verbose=False):
 
-    if verbose: logger.debug("apply_rule> applying rule {n} ({name})...".format(n=rule["n"], name=rule["description"]))
+    if verbose: logger.debug("apply_rule> applying rule {n} '{name}'...".format(n=rule["n"], name=rule["description"]))
 
     mols = [mol]
 
@@ -138,7 +138,7 @@ def apply_rule(mol, rule, verbose=False):
 
             return mols[0] if changed else None
 
-    logging.debug("apply_rule {n} ({name})> maximum number of passes reached; current number of mols is {n_mols}".format(n=rule["n"], name=rule["description"], n_mols=len(mols)))
+    logging.debug("apply_rule {n} '{name}'> maximum number of passes reached; current number of mols is {n_mols}".format(n=rule["n"], name=rule["description"], n_mols=len(mols)))
 
     return mols[0]
 
@@ -162,7 +162,7 @@ def apply(mol, first_only=False, verbose=False):
 
             if product:
 
-                logger.info("rule {n} ({name}) applied on pass {n_pass}".format(n=rule["n"], name=rule["description"], n_pass=n_pass))
+                logger.info("rule {n} '{name}' applied on pass {n_pass}".format(n=rule["n"], name=rule["description"], n_pass=n_pass))
 
                 mol = product
 
@@ -196,7 +196,7 @@ def demo(old_mol):
 
             new_mol = products[0][0]
 
-            logger.info("rule {n} ({name}) applied".format(n=rule['n'], name=rule['description']))
+            logger.info("rule {n} '{name}' applied".format(n=rule['n'], name=rule['description']))
 
             break
 
