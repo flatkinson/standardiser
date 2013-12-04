@@ -1,55 +1,50 @@
 #! /usr/bin/env python
 
-# Get parent structures from CHEMBL as RDKit canonical SMILES
+# Get parent structures from CHEMBL
 
 from __future__ import print_function, division
 
-import cx_Oracle
-from rdkit import Chem
+import psycopg2
+import csv
 
-maxrows = 10000
-
-conn_str = 'chembl_17_app/chembl_17_app@chempro'
+db = {
+        "host":   "10.7.248.39"
+      , "port":   5432
+      , "user":   "chembl"
+      , "dbname": "chembl_17"
+}
 
 sql = """
 select
-      b.canonical_smiles
+      b.canonical_smiles as smiles
     , c.chembl_id
 from
       (select distinct parent_molregno as molregno from molecule_hierarchy) a
     , compound_structures b
     , chembl_id_lookup c
     , compound_properties d
+    , mols_rdkit e
 where
     a.molregno = b.molregno
 and a.molregno = c.entity_id and c.entity_type = 'COMPOUND'
 and a.molregno = d.molregno
+and a.molregno = e.molregno
 and b.canonical_smiles is not null
-and d.mw_freebase >= 100 and d.mw_freebase <= 400
-and rownum <= :maxrows
+and e.m is not null
+and d.heavy_atoms >= 10 and d.heavy_atoms <= 40
+and d.mw_freebase <= 500
 """
 
-conn = cx_Oracle.connect(conn_str)
+with psycopg2.connect(**db) as conn:
 
-cursor = conn.cursor()
+    cursor = conn.cursor()
 
-cursor.execute(sql, maxrows=maxrows)
+    cursor.execute(sql)
 
-output = open("chembl_parents.smi", "w")
-errors = open("chembl_parents.err", "w")
+    with open("chembl_parents2.smi", "w") as tsv_file:
 
-for row in cursor:
+        writer = csv.writer(tsv_file, delimiter="\t")
 
-    smiles, name = row
+        for record in cursor:
 
-    mol = Chem.MolFromSmiles(smiles)
-
-    if not mol:
-
-        print("\t".join([smiles, name]), file=errors)
-
-    smiles = Chem.MolToSmiles(mol, isomericSmiles=True)
-
-    print("\t".join([smiles, name]), file=output)
-
-output.close()
+            writer.writerow(record)

@@ -1,7 +1,9 @@
 # Setup for the IPython Notebooks
 
-import os, sys
-import logging
+from __future__  import print_function, division
+
+import os, sys, logging
+import re
 from IPython.display import HTML
 from jinja2 import Template
 import pandas

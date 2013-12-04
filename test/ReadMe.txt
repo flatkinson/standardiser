@@ -2,12 +2,11 @@
 
 ./chembl_parents.py
 
-# $ wc -l chembl_parents.smi
-#  10000 chembl_parents.smi
+./subset.py
 
 rm -f not_built.smi multi_component.smi no_non_salt.smi standardised.smi
 
-../standardiser.py chembl_parents.smi
+../standardiser2.py subset.smi 1> standardiser.log 2>&1
 
 # $ wc -l not_built.smi multi_component.smi standardised.smi no_non_salt.smi
 #      0 not_built.smi
@@ -16,4 +15,4 @@ rm -f not_built.smi multi_component.smi no_non_salt.smi standardised.smi
 #      6 no_non_salt.smi
 #  10000 total
 
-# ipython notebook
+# Start ipython notebook server and look at 'chembl_parents.ipynb'

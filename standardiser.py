@@ -1,11 +1,8 @@
 #! /usr/bin/env python
 
-from __future__ import print_function
 import os, sys, argparse, logging
 
-import copy
-
-#@ from collections import Counter
+import csv
 
 from rdkit import Chem
 
@@ -42,7 +39,6 @@ logging.basicConfig(level=logging.DEBUG if config.verbose else logging.INFO, for
 
 error_names = standardise.errors.keys()
 
-#@ counts = Counter({name: 0 for name in error_names + ["read", "standardised"]})
 counts = dict((name, 0) for name in error_names + ["read", "standardised"]) # python2.6-compatible
 
 # Input type...
@@ -53,10 +49,9 @@ logging.info("Input type = '{type}'".format(type=input_type))
 
 if input_type == ".sdf":
 
-    # Read/write sdf...
+    # Read/write SDF...
 
-#@    outfile = {name: open(name + ".sdf", "w") for name in error_names + ["standardised"]}
-    outfile = dict((name, open(name + ".sdf", "w")) for name in error_names + ["standardised"]) # python2.6-compatible
+    outfile = dict((name, open(name + ".sdf", "w")) for name in ["standardised"] + error_names) # python2.6-compatible
 
     for sdf in standardise.SDF.readFile(open(config.infile)):
 
@@ -86,38 +81,43 @@ if input_type == ".sdf":
 
 else: # input_type == '.smi'
 
-    # Read/write smi...
+    # Read/write (tab-seperated) SMILES + name...
 
-    #@ outfile = {name: open(name + ".smi", "w") for name in error_names + ["standardised"]}
-    outfile = dict((name, open(name + ".smi", "w")) for name in error_names + ["standardised"])  # python2.6-compatible
+    outfile = dict((name, csv.writer(open(name + ".smi", "w"), delimiter="\t")) for name in ["standardised"] + error_names)  # python2.6-compatible
 
-    for original in open(config.infile):
+    with open(config.infile) as tsv_file:
 
-        smiles, name = original.split()
+        for original in csv.reader(tsv_file, delimiter="\t"):
 
-        counts["read"] += 1
+            smiles, name = original
 
-        logging.info(">>> Starting mol '{name}'...".format(name=name))
+            counts["read"] += 1
 
-        try:
+            logging.info(">>> Starting mol '{}'...".format(name))
 
-            parent = standardise.apply(smiles)
+            try:
 
-        except standardise.StandardiseException as e:
+                rules_applied = []
 
-            logging.warn(">>> {err} for '{name}'".format(err=standardise.errors[e.name], name=name))
+                parent = standardise.apply(smiles, output_rules_applied=rules_applied)
 
-            counts[e.name] += 1
+            except standardise.StandardiseException as error:
 
-            outfile[e.name].write(original)
+                logging.warn(">>> {} for mol '{}'".format(standardise.errors[error.name], name))
 
-            continue
+                counts[error.name] += 1
 
-        logging.info("Mol '{name}' OK".format(name=name))
+                print(original)
 
-        counts["standardised"] += 1
+                outfile[error.name].writerow(original)
 
-        outfile["standardised"].write("{smiles}\t{name}\n".format(smiles=parent, name=name))
+                continue
+
+            logging.info("Mol '{name}' OK".format(name=name))
+
+            counts["standardised"] += 1
+
+            outfile["standardised"].writerow([parent, name, smiles, ','.join(str(x) for x in rules_applied)])
 
 logging.info("Finished: {read} read, {not_built} not built, {no_non_salt} no non-salt, {multi_component} multi-component, {standardised} standardised".format(**counts))
 

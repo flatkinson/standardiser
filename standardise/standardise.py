@@ -44,7 +44,7 @@ class StandardiseException(Exception):
 
 ######
 
-def apply(input_mol):
+def apply(input_mol, output_rules_applied=None): #@@@
 
     # Get input molecule...
 
@@ -95,7 +95,7 @@ def apply(input_mol):
 
         logger.debug("3) Applying rules...")
 
-        frag = rules.apply(frag)
+        frag = rules.apply(frag, output_rules_applied=output_rules_applied) #@@@
 
         logger.debug("4) Attempting to neutralise (second pass)...")
 

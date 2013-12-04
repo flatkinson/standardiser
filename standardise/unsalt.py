@@ -20,6 +20,8 @@ from rdkit import Chem
 
 # Module configuration...
 
+use_inchi = False ### Chem.INCHI_AVAILABLE
+
 salts_file = "salts.tsv"
 
 non_organic_elements = "[!#1&!#6&!#7&!#8&!#9&!#15&!#16&!#17&!#35&!#53]"
@@ -50,7 +52,7 @@ for record in csv.DictReader(salts_fh, delimiter="\t"):
 
     Chem.RemoveStereochemistry(mol)
 
-    key = Chem.MolToInchi(mol) if Chem.INCHI_AVAILABLE else Chem.MolToSmiles(mol)
+    key = Chem.MolToInchi(mol) if use_inchi else Chem.MolToSmiles(mol)
 
     salts[key] = {'SMILES': smiles, 'name': name}
 
@@ -76,7 +78,7 @@ def is_salt(mol):
 
     Chem.RemoveStereochemistry(mol)
 
-    key = Chem.MolToInchi(mol) if Chem.INCHI_AVAILABLE else Chem.MolToSmiles(mol)
+    key = Chem.MolToInchi(mol) if use_inchi else Chem.MolToSmiles(mol)
 
     if key in salts:
 
