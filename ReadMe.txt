@@ -1,5 +1,3 @@
-See the IPython Notebooks in docs/ for more information on what this tools does and how it can be used.
+This is a tool designed to provide a simple way of standardising molecules as a prelude to _e.g._ molecular modelling exercises.
 
-Some testing is documented in test/.
-
-The program bin/standardiser.py is a simple driver program intended for larger test sets.
+Please see the IPython Notebooks in docs/ (or the HTML versions in bin/html/) for more information.
