@@ -1701,10 +1701,10 @@ init_mathjax();
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[2]:
+In&nbsp;[1]:
 </div>
 <div class="input_area box-flex1">
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">IPython</span><span class="p">;</span> <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=&quot;files/standardiser.pdf&quot; width=&quot;1000&quot; height=&quot;750&quot;&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">IPython</span><span class="p">;</span> <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=&quot;files/standardiser.pdf&quot; width=&quot;800&quot; height=&quot;600&quot;&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1715,11 +1715,11 @@ In&nbsp;[2]:
 
 
 <div class="hbox output_area"><div class="prompt output_prompt">
-    Out[2]:</div>
+    Out[1]:</div>
 <div class="box-flex1 output_subarea output_pyout">
 
 <div class="output_html rendered_html">
-<iframe src="standardiser.pdf" width="1000" height="750"></iframe>
+<iframe src="standardiser.pdf" width="800" height="600"></iframe>
 </div>
 
 </div>
@@ -1748,11 +1748,12 @@ In&nbsp;[2]:
 <h3 id="further-work">Further work</h3>
 <ul>
 <li><p>Tidy up the code</p></li>
+<li><p>Proper installer</p></li>
 <li>Proper API documentation
 <ul>
 <li>Hopefully the notebooks show how things work, but proper Pythonic documentation is still needed</li>
 </ul></li>
-<li><p>Improve the rule set, neutralisation algorithm &amp; salt dictionary.</p></li>
+<li><p>Improve the rule set, neutralisation algorithm and salt dictionary</p></li>
 <li>Better (optional) logging of what each module has done to a molecule...
 <ul>
 <li>The <strong><code>rules</code></strong> module can return a list of what rules have been applied</li>
