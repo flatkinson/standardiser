@@ -2,26 +2,20 @@
 
 ########################################################################
 
-from __future__ import print_function
+from __future__ import print_function, division
 
-import logging
-logger = logging.getLogger(__name__)
+import logging; logger = logging.getLogger(__name__)
 
-import rdkit
 from rdkit import Chem
 
 from . import break_bonds, neutralise, rules, unsalt
+
+from .utils import StandardiseException, sanity_check, timeout
 
 ########################################################################
 #
 # Module configuration...
 #
-
-errors = {
-    "not_built":       "RDKit could not build mol",
-    "no_non_salt":     "No non-salt/solvate components",
-    "multi_component": "Multiple non-salt/solvate components"
-}
 
 ########################################################################
 #
@@ -30,25 +24,12 @@ errors = {
 
 ########################################################################
 
-class StandardiseException(Exception):
-
-    def __init__(self, name):
-
-        self.name = name
-
-        self.message = errors[name]
-
-        self.args = (errors[name], )
-
-# StandardiseException
-
-######
-
-def apply(input_mol, output_rules_applied=None): #@@@
+@timeout()
+def apply(input_mol, output_rules_applied=None): 
 
     # Get input molecule...
 
-    if type(input_mol) == rdkit.Chem.rdchem.Mol:
+    if type(input_mol) == Chem.rdchem.Mol:
 
         mol = input_mol
 
@@ -73,6 +54,8 @@ def apply(input_mol, output_rules_applied=None): #@@@
 
             input_type = 'sdf'
 
+    sanity_check(mol)
+
     ######
 
     # Get disconnected fragments...
@@ -95,7 +78,7 @@ def apply(input_mol, output_rules_applied=None): #@@@
 
         logger.debug("3) Applying rules...")
 
-        frag = rules.apply(frag, output_rules_applied=output_rules_applied) #@@@
+        frag = rules.apply(frag, output_rules_applied=output_rules_applied)
 
         logger.debug("4) Attempting to neutralise (second pass)...")
 

@@ -3,5 +3,7 @@ __all__ = [
     "neutralise",
     "rules",
     "unsalt",
-    "SDF"
+    "standardise",
+    "SDF",
+    "utils"
 ]

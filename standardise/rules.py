@@ -1,4 +1,6 @@
-"""Apply standardisation rules"""
+"""
+Module to apply rule-based standardisations.
+"""
 
 ########################################################################
 
@@ -17,6 +19,8 @@ from itertools import ifilterfalse
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Geometry import rdGeometry
+
+from .utils import StandardiseException
 
 ########################################################################
 
@@ -42,6 +46,13 @@ with open(os.path.join(os.path.dirname(__file__), data_dir_name, rules_file_name
 
 def setAllHsExplicit(mol):
 
+    """
+    Make all hydrogens explicit.
+   
+    #TODO: In the earliest versions of this project, this hack was necessary to get things working as I expected.
+    That was several versions of RDKit ago, however, and I really need to check whether this is still necessary.
+    """
+
     for atom in mol.GetAtoms():
 
         atom.SetNumExplicitHs(atom.GetTotalNumHs())
@@ -53,6 +64,12 @@ def setAllHsExplicit(mol):
 ######
 
 def apply_rule(mol, rule, verbose=False):
+
+    """
+    Apply a single rule to the input molecule.
+
+    Please see the IPython Notebook 'issue_01' for an explanation of why things are done this way.
+    """
 
     if verbose: logger.debug("apply_rule> applying rule {} '{}'...".format(rule["n"], rule["name"]))
 
@@ -71,11 +88,18 @@ def apply_rule(mol, rule, verbose=False):
             for product in [x[0] for x in rule["rxn"].RunReactants((mol,))]:
 
                 try:
-                    Chem.SanitizeMol(product)
-                except ValueError as error:
-                    if error.message.startswith("Sanitization error"): continue
 
-                products.setdefault(Chem.MolToSmiles(product, isomericSmiles=True), product)
+                    Chem.SanitizeMol(product)
+
+                    smiles = Chem.MolToSmiles(product, isomericSmiles=True)
+
+                except ValueError as error:
+
+                    continue # We are assuming this simply means an unphysical molecule has been generated
+
+                if smiles in products: continue # Keep only new structures
+                
+                products[smiles] = product
 
         if products:
 
@@ -83,7 +107,7 @@ def apply_rule(mol, rule, verbose=False):
 
             if (verbose): logging.debug("apply_rule> there are {} products: will continue".format(len(products.values())))
 
-            mols = products.values()
+            mols = products.values() # Update list of mols
 
         else:
 
@@ -100,6 +124,10 @@ def apply_rule(mol, rule, verbose=False):
 ######
 
 def apply(mol, first_only=False, verbose=False, output_rules_applied=None):
+
+    """
+    Apply all rules to the input molecule.
+    """
 
     logger.debug("apply> mol = '{}'".format(Chem.MolToSmiles(mol)))
 
@@ -133,7 +161,7 @@ def apply(mol, first_only=False, verbose=False, output_rules_applied=None):
 
         if n_hits_for_pass == 0: break
 
-    setAllHsExplicit(mol)
+    setAllHsExplicit(mol) 
 
     return mol
 
@@ -142,6 +170,10 @@ def apply(mol, first_only=False, verbose=False, output_rules_applied=None):
 ######
 
 def demo(old_mol):
+
+    """
+    Utility function for illustrating the application of rules.
+    """
 
     new_mol = None
 
@@ -175,7 +207,6 @@ def demo(old_mol):
     new_match = new_mol.GetSubstructMatch(Chem.MolFromSmarts(new_pat))
 
     #@ coord_map = {new_idx: rdGeometry.Point2D(conf.GetAtomPosition(old_idx).x, conf.GetAtomPosition(old_idx).y) for old_idx, new_idx in zip(old_match, new_match)}
-
     coord_map = dict((new_idx, rdGeometry.Point2D(conf.GetAtomPosition(old_idx).x, conf.GetAtomPosition(old_idx).y)) for old_idx, new_idx in zip(old_match, new_match))  # python2.6-compatible
 
     AllChem.Compute2DCoords(new_mol, clearConfs=True, coordMap=coord_map, canonOrient=False)
@@ -183,57 +214,6 @@ def demo(old_mol):
     return old_mol, old_match, new_mol, new_match
 
 # demo
-
-######
-
-def apply_old(mol):
-
-    for n_pass in range(1, max_passes+1):
-
-        logger.debug("starting pass {}...".format(n_pass))
-
-        n_hits_for_pass = 0
-
-        for rule in rule_set:
-
-            n_hits_for_rule = 0
-
-            while True:
-
-                products = rule["rxn"].RunReactants((mol,))
-
-                if not len(products): break
-
-                new_mol = products[0][0]
-
-                try:
-                    Chem.SanitizeMol(new_mol)
-
-                except ValueError as e:
-
-                    logger.debug("SanitizeMol failed for rule {} '{}': '{}'".format(rule['n'], rule['name'], e.message.rstrip()))
-
-                    break
-
-                mol = new_mol
-
-                n_hits_for_rule += 1
-
-            if n_hits_for_rule:
-
-                logger.debug("rule {} '{}' applied {} time(s) on pass {}".format(rule['n'], rule['name'], n_hits_for_rule, n_pass))
-
-                n_hits_for_pass += n_hits_for_rule
-
-        logger.debug("...total of {} applications in pass: {}".format(n_hits_for_pass, "will continue..." if n_hits_for_pass else "finished."))
-
-        if n_hits_for_pass == 0: break
-
-    setAllHsExplicit(mol)
-
-    return mol
-
-# apply_old
 
 ########################################################################
 # End

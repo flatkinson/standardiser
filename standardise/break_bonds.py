@@ -4,7 +4,7 @@
 
 # Module imports...
 
-from __future__ import print_function
+from __future__ import print_function, division
 
 import logging
 logger = logging.getLogger(__name__)
@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 from collections import defaultdict
 
 from rdkit import Chem
+
+from .utils import StandardiseException, sanity_check
 
 ########################################################################
 
@@ -59,8 +61,10 @@ def apply(mol):
 
             charge_added[j] -= charge_incr
 
-    Chem.SanitizeMol(mol)
+    # Done...
 
+    sanity_check(mol)
+    
     logger.debug("Broke {n} bonds to Group I and II metals".format(n=n_broken))
 
     return mol  # , charge_added

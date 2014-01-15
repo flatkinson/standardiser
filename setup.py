@@ -4,13 +4,19 @@ from __future__  import print_function, division
 
 import os, sys, logging
 import re
-from IPython.display import HTML
+
 from jinja2 import Template
+
 import pandas
 import pandas as pd
+
+from IPython.display import HTML
+
 from rdkit import Chem, rdBase, DataStructs
 from rdkit.Chem import AllChem, PandasTools, Draw
 from rdkit.Chem.Draw import IPythonConsole
+
+PandasTools.RenderImagesInAllDataFrames()
 IPythonConsole.molSize = (450, 200)
 
 # At top of notebook...

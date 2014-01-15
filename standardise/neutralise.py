@@ -4,7 +4,7 @@
 
 # Module imports...
 
-from __future__ import print_function
+from __future__ import print_function, division
 
 import logging
 logger = logging.getLogger(__name__)
@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 import copy
 
 from rdkit import Chem
+
+from .utils import StandardiseException, sanity_check
 
 ########################################################################
 
@@ -30,21 +32,15 @@ acid_h_pat = Chem.MolFromSmarts("[$([OH][C,P,S]=O),$([n-]1nnnc1),$(n1[n-]nnc1)]"
 
 ########################################################################
 
-class NeutralizationError(Exception):
-
-    def __init__(self, msg):
-
-        self.message = msg
-
-# class NeutralizationError
-
-######
-
 def formal_charge(mol):
 
     return sum(x.GetFormalCharge() for x in mol.GetAtoms())
 
 # def formal_charge
+
+######
+
+# NB This solved a problem in early iterations: newer RDKit releases may have made it unnecessary, but I haven't gone back and checked properly yet
 
 def set_all_h_explicit(mol):
 
@@ -141,9 +137,9 @@ def apply(mol, balance_quat_surplus=False):
 
     # Done...
 
-    logger.debug("Overall H balance: {sign}{n}; formal charge: {chg}".format(sign="+" if h_added > 0 else "", n=h_added, chg=formal_charge(mol)))
+    sanity_check(mol)
 
-    Chem.SanitizeMol(mol)
+    logger.debug("Overall H balance: {sign}{n}; formal charge: {chg}".format(sign="+" if h_added > 0 else "", n=h_added, chg=formal_charge(mol)))
 
     return mol
 
