@@ -1,6 +1,8 @@
 # Structures from PubChem
 # ftp://ftp.ncbi.nlm.nih.gov/pubchem/Compound/
 
+PATH=../../bin:$PATH
+
 wc -l pubchem.smi
  47332186 pubchem.smi
 

@@ -1,6 +1,8 @@
 # Structures from the EPA ACToR database
 # http://actor.epa.gov/actor/faces/ACToRHome.jsp
 
+PATH=../../bin:$PATH
+
 ./unique_smiles.py
 
 wc -l actor.smi
