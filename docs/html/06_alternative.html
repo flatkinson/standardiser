@@ -1696,7 +1696,7 @@ init_mathjax();
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[29]:
+In&nbsp;[1]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="o">%</span><span class="k">run</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span>
@@ -1715,7 +1715,7 @@ In&nbsp;[29]:
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[30]:
+In&nbsp;[2]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="kn">from</span> <span class="nn">standardise</span> <span class="kn">import</span> <span class="o">*</span>
@@ -1730,7 +1730,8 @@ In&nbsp;[30]:
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="introduction">Introduction</h3>
-<p>This document provides some examples of the use of the individual modules in the <strong><code>standardise</code></strong> package in a 'bare bones' alternative workflow</p>
+<p>This document provides some examples of the use of the individual modules in the <strong><code>standardise</code></strong> package in a 'bare bones' alternative workflow.</p>
+<p>TODO: make this a bit less sparse...</p>
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="examples">Examples</h3>
@@ -1738,7 +1739,7 @@ In&nbsp;[30]:
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[13]:
+In&nbsp;[3]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s">&quot;[Na]OC(=O)Cc1cc(O)ncc1&quot;</span><span class="p">)</span>
@@ -1753,7 +1754,7 @@ In&nbsp;[13]:
 
 
 <div class="hbox output_area"><div class="prompt output_prompt">
-    Out[13]:</div>
+    Out[3]:</div>
 <div class="box-flex1 output_subarea output_pyout">
 
 
@@ -1800,7 +1801,7 @@ KEBERgEiMgoQkVGAyP8m7HpUGNg+0wAAAABJRU5ErkJggg==
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[16]:
+In&nbsp;[4]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">mol</span> <span class="o">=</span> <span class="n">break_bonds</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
@@ -1814,8 +1815,17 @@ In&nbsp;[16]:
 <div class="output vbox">
 
 
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_stream output_stderr">
+<pre>
+[2014/Jan/16 11:31:50 DEBUG   ] Broke 1 bonds to Group I and II metals
+
+</pre>
+</div>
+</div>
+
 <div class="hbox output_area"><div class="prompt output_prompt">
-    Out[16]:</div>
+    Out[4]:</div>
 <div class="box-flex1 output_subarea output_pyout">
 
 
@@ -1861,7 +1871,7 @@ owAhMgoQIqMAIf8D4WgmkuRBJbcAAAAASUVORK5CYII=
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[25]:
+In&nbsp;[5]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Chem</span><span class="o">.</span><span class="n">GetMolFrags</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">asMols</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">unsalt</span><span class="o">.</span><span class="n">is_nonorganic</span><span class="p">(</span><span class="n">x</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
@@ -1875,8 +1885,17 @@ In&nbsp;[25]:
 <div class="output vbox">
 
 
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_stream output_stderr">
+<pre>
+[2014/Jan/16 11:31:53 DEBUG   ] Fragment contains a non-organic element
+
+</pre>
+</div>
+</div>
+
 <div class="hbox output_area"><div class="prompt output_prompt">
-    Out[25]:</div>
+    Out[5]:</div>
 <div class="box-flex1 output_subarea output_pyout">
 
 
@@ -1920,10 +1939,10 @@ GQWIyChAREYBIjIKEJFRgIiMAkRkFCDyH/BZ5nkmzld1AAAAAElFTkSuQmCC
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[26]:
+In&nbsp;[7]:
 </div>
 <div class="input_area box-flex1">
-<div class="highlight"><pre><span class="n">mol</span> <span class="o">=</span> <span class="n">neutralize</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<div class="highlight"><pre><span class="n">mol</span> <span class="o">=</span> <span class="n">neutralise</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 <span class="n">mol</span>
 </pre></div>
 
@@ -1934,8 +1953,18 @@ In&nbsp;[26]:
 <div class="output vbox">
 
 
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_stream output_stderr">
+<pre>
+[2014/Jan/16 11:32:01 DEBUG   ] 0 positive/H, 0 positive/quat and 1 negative (of which 1 are acid) charges identified
+[2014/Jan/16 11:32:01 DEBUG   ] Overall H balance: +1; formal charge: 0
+
+</pre>
+</div>
+</div>
+
 <div class="hbox output_area"><div class="prompt output_prompt">
-    Out[26]:</div>
+    Out[7]:</div>
 <div class="box-flex1 output_subarea output_pyout">
 
 
@@ -1979,7 +2008,7 @@ IjIKEJFRgIiMAkRkFCAiowARGQWIyChAREYBIjIKEPkPyWj3ZEcAQIoAAAAASUVORK5CYII=
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[28]:
+In&nbsp;[8]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">mol</span> <span class="o">=</span> <span class="n">rules</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
@@ -1993,8 +2022,22 @@ In&nbsp;[28]:
 <div class="output vbox">
 
 
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_stream output_stderr">
+<pre>
+[2014/Jan/16 11:32:03 DEBUG   ] apply&gt; mol = &apos;O=C(O)Cc1ccnc(O)c1&apos;
+[2014/Jan/16 11:32:03 DEBUG   ] apply&gt; starting pass 1...
+[2014/Jan/16 11:32:03 INFO    ] rule 2 &apos;2-hydroxy pyridine -&gt; 2-pyridone&apos; applied on pass 1
+[2014/Jan/16 11:32:03 DEBUG   ] ...total of 1 hits in pass: will continue...
+[2014/Jan/16 11:32:03 DEBUG   ] apply&gt; starting pass 2...
+[2014/Jan/16 11:32:03 DEBUG   ] ...total of 0 hits in pass: finished.
+
+</pre>
+</div>
+</div>
+
 <div class="hbox output_area"><div class="prompt output_prompt">
-    Out[28]:</div>
+    Out[8]:</div>
 <div class="box-flex1 output_subarea output_pyout">
 
 
