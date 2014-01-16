@@ -1,1 +1,1 @@
-../../setup.py
+../../docs/setup.py
