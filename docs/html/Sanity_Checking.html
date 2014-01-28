@@ -1693,19 +1693,44 @@ init_mathjax();
 </head>
 <body>
 
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="standardiser"><code>standardiser</code></h1>
-<p>This is the first publically-released version of a tool designed to provide a simple way of standardising molecules as a prelude to <em>e.g.</em> molecular modelling exercises.</p>
-<p>A Python module is provided that performs the complete standardisation procedure; in addition, the modules that implement the individual steps may be used seperately if required, perhaps as part of a custom standardisation pipeline.</p>
-<p>A slide-set describing some of the background to the project is shown below...</p>
-</div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
 In&nbsp;[1]:
 </div>
 <div class="input_area box-flex1">
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">IPython</span><span class="p">;</span> <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=&quot;files/standardiser.pdf&quot; width=&quot;800&quot; height=&quot;600&quot;&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span class="o">%</span><span class="k">run</span> <span class="o">~/</span><span class="n">projects</span><span class="o">/</span><span class="n">standardiser</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">py</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;~/projects/standardiser&quot;</span><span class="p">)</span>
+
+<span class="nb">reload</span><span class="p">(</span><span class="n">logging</span><span class="p">)</span> <span class="c"># Seems to be required to get logging from modules working</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;[</span><span class="si">%(asctime)s</span><span class="s"> </span><span class="si">%(levelname)-8s</span><span class="s">] </span><span class="si">%(message)s</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s">&quot;%Y/%b/</span><span class="si">%d</span><span class="s"> %H:%M:%S&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="sanity-checking">Sanity Checking</h1>
+<p>Sometimes weird stuff comes along and things stop working...</p>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="fails-sanitization">Fails Sanitization</h3>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[11]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="c"># PubChem CID 128221</span>
+
+<span class="n">smiles</span> <span class="o">=</span> <span class="s">&#39;C1=CC(=C[C+]=C1)N&#39;</span>
+
+<span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+<span class="n">mol</span>
 </pre></div>
 
 </div>
@@ -1716,12 +1741,165 @@ In&nbsp;[1]:
 
 
 <div class="hbox output_area"><div class="prompt output_prompt">
-    Out[1]:</div>
+    Out[11]:</div>
 <div class="box-flex1 output_subarea output_pyout">
 
-<div class="output_html rendered_html">
-<iframe src="standardiser.pdf" width="800" height="600"></iframe>
+
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAADICAIAAAD0lnbAAAAE3UlEQVR4nO3dwW7iMBSGUTKa93/l
+zCIVYpJgAj+Nr+EcddHSqMoCPq7jqEzzPF8AeNWf3icAMDYZBYjIKEBERgEiMgoQkVGAiIwCRGQU
+ICKjABEZBYjIKEBERgEiMgoQkVGAiIwCRGQUICKjABEZBYjIKEBERgEiMgoQkVGAiIwCRGQUICKj
+ABEZBYjIKEBERgEiMgoQkVGAiIwCRGQUICKjABEZBYjIKEBERgEiMgoQkVGAiIwCRGQUICKjABEZ
+BYjIKEBERgEiMgoQkVGAiIwCRGQUICKjABEZBYjIKEBERgEiMgoQkVGAiIwCRGQUICKjABEZBYjI
+KEBERgEiMgoQkVGAiIwCRGQUIPK39wlAf9M0Xb+f57njmTAiGaW028C93VLMaZpu07n6ER7yjKGu
+E4ommuRcG4WWXx2H+QwySlHmREbh2ijsu86hyzeazj0ySkUVRtHdDSjYsqjnq83zvLr66WIoz/JO
+SznnD4DuGyVhUc+3e1ht63raZJRaGs1aLbevh+WPCyUJzx4K6TUYGkhJ2GKCnY0mOE5GqaLySKiz
+NMgoXC426AnIKCVUHkUXBlLukVHGcE5D26FUUnbJKP11nzSvhJIXyCjVleqazrIlo3RWZxRdCCXP
+klF6qr+ztKWzrMgorD0Mt5JyS0bpZsRRFLZklLr6NtTNTxwko/RRf9IUSg6SUSoaol86y0JG6aD+
+KLoQSo6QUc72STtLOstFRqHNzU88JKOc6pNGUVjIKLXUbKibn2iQUc4z7qQplDTIKFUM3Smd/WYy
++oG2L+fbR6bp5+vg8e87q1FH0cUSSq1kS0a/yzRd5vnnq13Sk40S2cZJGki/1t/eJ8Cp7kVgqerq
+t3ea8GIphqhkYpR3At5ORr/UNppbdw54sRSNygwxxKkk98joZ2p3abehuwPpOZY8Dd2poU+ekIx+
+psbyvNHKXy3pculw3NaMe+b8NltM36XXvHnEuFs0Q789kJNR/rPawX/3H38QypoxGjTunMai/uvc
+NmG3Wr9a0uH4JwA8JKMfaHf76N6v2se/3ZErpMLEWCzqOdtA10AVnyNklHJG6ayGspBROhgllCrJ
+ETJKRfU7axTlSkbpo/jNT8UjTikyCmt2lniKjNLNkZW7qZD6ZJSeCl4DNYryLBmltGqd1VC2ZJTO
+qoVSJXmWjFJdnc4aRdklo/RX5OanIrFmODJKCd1HTjtLvExGGYZpkZpklCo6DqRGURIyyjC6L/xh
+l3/bTCEHP/ZuFdPr8cnj7c9/NorS4PlBLdXW1xrKQxb11FLk5ic4TkYpp841UKMoR8goQERGqajC
+QGoU5SAZBYjIKEX1HUiNohwnowARb7mU1msg9brgOBkFiFjUA0RkFCAiowARGQWIyChAREYBIjIK
+EJFRgIiMAkRkFCAiowARGQWIyChAREYBIjIKEJFRgIiMAkRkFCAiowARGQWIyChAREYBIjIKEJFR
+gIiMAkRkFCAiowARGQWIyChAREYBIjIKEJFRgIiMAkRkFCAiowARGQWIyChAREYBIjIKEJFRgIiM
+AkRkFCAiowARGQWIyChAREYBIjIKEJFRgIiMAkRkFCAiowARGQWIyChAREYBIjIKEJFRgIiMAkRk
+FCAiowARGQWIyChAREYBIjIKEJFRgIiMAkT+AQHg8ZNL47H7AAAAAElFTkSuQmCC
+">
+
 </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[10]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="n">Chem</span><span class="o">.</span><span class="n">SanitizeMol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_pyerr">
+<pre>
+<span class="ansired">---------------------------------------------------------------------------</span>
+<span class="ansired">ValueError</span>                                Traceback (most recent call last)
+<span class="ansigreen">&lt;ipython-input-10-148452905881&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">----&gt; 1</span><span class="ansired"> </span>Chem<span class="ansiblue">.</span>SanitizeMol<span class="ansiblue">(</span>mol<span class="ansiblue">)</span><span class="ansiblue"></span>
+
+<span class="ansired">ValueError</span>: Sanitization error: Can&apos;t kekulize mol 
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[4]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt output_prompt">
+    Out[4]:</div>
+<div class="box-flex1 output_subarea output_pyout">
+
+
+<pre>
+&apos;Nc1ccc[c+]c1&apos;
+</pre>
+
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[5]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="c"># Note that SanitizeMol &#39;works&#39; on subsequent calls...</span>
+
+<span class="n">Chem</span><span class="o">.</span><span class="n">SanitizeMol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt output_prompt">
+    Out[5]:</div>
+<div class="box-flex1 output_subarea output_pyout">
+
+
+<pre>
+rdkit.Chem.rdmolops.SanitizeFlags.SANITIZE_NONE
+</pre>
+
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[6]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt output_prompt">
+    Out[6]:</div>
+<div class="box-flex1 output_subarea output_pyout">
+
+
+<pre>
+&apos;NC1=CC=C[C+]C1&apos;
+</pre>
 
 </div>
 </div>
@@ -1731,54 +1909,220 @@ In&nbsp;[1]:
 
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In summary, the general procedure for standardising a molecule (with the documentation for the appropriate module linked) is...</p>
-<ul>
-<li><p>Break bonds to Group I or II metals [<a href="01_break_bonds.html"><strong><code>break_bonds</code></strong></a>]</p></li>
-<li><p>Neutralize charges by adding/removing protons [<a href="02_neutralise.html"><strong><code>neutralise</code></strong></a>]</p></li>
-<li><p>Apply standardization rules [<a href="03_rules.html"><strong><code>rules</code></strong></a>]</p></li>
-<li><p>Re-run neutralisation (in case any charges are exposed by rules)</p></li>
-<li><p>Discard any salt/solvate components [<a href="04_unsalt.html"><strong><code>unsalt</code></strong></a>]</p></li>
-<li><p>Return standardized parent</p></li>
-</ul>
-<p>The complete procedure is implemented by the <a href="05_standardise.html"><strong><code>standardise</code></strong></a> module; a bare-bones alternative workflow using the individual modules is shown <a href="06_alternative.html">here</a>.</p>
-<p>The documentantion is contained in the project <strong><code>docs/</code></strong> directory, and consists of a set of <a href="http://ipython.org/notebook.html">IPython Notebooks</a>, which can be viewed (and run and edited) by starting a notebook server in that directory. Alternatively, the notebooks have been exported as HTML pages, which can be viewed by pointing a browser at the <strong><code>docs/html/</code></strong> directory.</p>
-<p>A simple command-line driver program <strong><code>standardiser.py</code></strong> is available in the project <strong><code>bin/</code></strong> directory. It take SD or SMILES as input, and writes out a file containing those structures that have been successfuly standardised and one containing structures for which the procedure has failed.</p>
-<p>In the project <strong><code>test/</code></strong> directory are examples of running <strong><code>standardiser.py</code></strong> on structures from taken from the PubChem and EPA ACToR databases.</p>
+<h3 id="too-many-rings">Too many rings</h3>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[4]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="c"># PubChem CID 20643358</span>
+
+<span class="n">smiles</span> <span class="o">=</span><span class="s">&#39;C1CC2CC3C4C5C6C7C8C9C%10C%11C%12C%13C%14C%15C%16CC%17C</span><span class="si">%16%</span><span class="s">16C</span><span class="si">%15%</span><span class="s">15C</span><span class="si">%14%</span><span class="s">14C</span><span class="si">%13%</span><span class="s">13C</span><span class="si">%12%</span><span class="s">12C</span><span class="si">%11%</span><span class="s">11C</span><span class="si">%10%</span><span class="s">10C99C88C77C66C55C44C33C2C2C33C44C55C66C77C88C99C</span><span class="si">%10%</span><span class="s">10C</span><span class="si">%11%</span><span class="s">11C</span><span class="si">%12%</span><span class="s">12C</span><span class="si">%13%</span><span class="s">13C</span><span class="si">%14%</span><span class="s">14C</span><span class="si">%15%</span><span class="s">15C</span><span class="si">%16%</span><span class="s">16C%17C%17C</span><span class="si">%16%</span><span class="s">16C</span><span class="si">%15%</span><span class="s">15C</span><span class="si">%14%</span><span class="s">14C</span><span class="si">%13%</span><span class="s">13C</span><span class="si">%12%</span><span class="s">12C</span><span class="si">%11%</span><span class="s">11C</span><span class="si">%10%</span><span class="s">10C99C88C77C66C55C44C33C2C2C33C44C55C66C77C88C99C</span><span class="si">%10%</span><span class="s">10C</span><span class="si">%11%</span><span class="s">11C</span><span class="si">%12%</span><span class="s">12C</span><span class="si">%13%</span><span class="s">13C</span><span class="si">%14%</span><span class="s">14C</span><span class="si">%15%</span><span class="s">15C</span><span class="si">%16%</span><span class="s">16C%17C%17C</span><span class="si">%16%</span><span class="s">16C</span><span class="si">%15%</span><span class="s">15C</span><span class="si">%14%</span><span class="s">14C</span><span class="si">%13%</span><span class="s">13C</span><span class="si">%12%</span><span class="s">12C</span><span class="si">%11%</span><span class="s">11C</span><span class="si">%10%</span><span class="s">10C99C88C77C66C55C44C33C2C2C33C44C55C66C77C88C99C</span><span class="si">%10%</span><span class="s">10C</span><span class="si">%11%</span><span class="s">11C</span><span class="si">%12%</span><span class="s">12C</span><span class="si">%13%</span><span class="s">13C</span><span class="si">%14%</span><span class="s">14C</span><span class="si">%15%</span><span class="s">15C</span><span class="si">%16%</span><span class="s">16C%17C%17C</span><span class="si">%16%</span><span class="s">16C</span><span class="si">%15%</span><span class="s">15C</span><span class="si">%14%</span><span class="s">14C</span><span class="si">%13%</span><span class="s">13C</span><span class="si">%12%</span><span class="s">12C</span><span class="si">%11%</span><span class="s">11C</span><span class="si">%10%</span><span class="s">10C99C88C77C66C55C44C33C2C(C1)C3C4C5C6C7C8C9C%10C%11C%12C%13C%14C%15C%16C%17&#39;</span> 
+
+<span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+<span class="n">mol</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt output_prompt">
+    Out[4]:</div>
+<div class="box-flex1 output_subarea output_pyout">
+
+
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAADICAIAAAD0lnbAAAAMjUlEQVR4nO3d3XK2KBYGUDM193/L
+mYN0ObYiAtsf0LUOpuZLI5JEHzeKb35+f38nAFr95+kBAIxNjAKEiFGAEDEKECJGAULEKECIGAUI
+EaMAIWIUIESMAoSIUYAQMQoQIkYBQsQoQIgYBQgRowAhYhQgRIwChIhRgBAxChAiRgFCxChAiBgF
+CBGjACFiFCBEjAKEiFGAEDEKECJGAULEKECIGAUIEaMAIWIUIESMAoSIUYAQMQoQIkYBQsQoQIgY
+BQj579MDgIH9/Pw8PYSv+P39fXoIu8QoHNuLy+W5/fPzU3iql7fU7dy4sOUjxCj8I3Ou9lwK8Tgx
+yueUlJZQTozyTkpLbiNGGZvSkseJUQagtKRnYpSOKC0Z0ctjdHlaOhU7obTkZd4co38L0+b/3Z69
++ZN2bu/cbqO05CPeGaN/J/Df6Ton6bZNJljn8J02cSAFlpSW8MIY3YZmMklX/9wm5qoanf/5zVRV
+WsKet8Xo3htmezXpssGqh73c3Hab7GdESkto8KoYPQzKw9d4lw1Wr0vvtV81HiJVlZZwovfEaNUn
+HdT2kIzg5B2A7Varr0RGWEtc3vyRFuW7qxpYn91+5yg6FI2eHiwfKJU0TrasKlQzw6hyyg//lJl4
+55+g0+zOw3u4z0yKnzKF+zpFz0k1fDVaW4Tu1ZWHnWxLy7irD8Ty/ns+RkdRctfoTdrKkYaWU/eX
++bFjNLkgqXzD/Fe2ms+TzORa0sHoBo7R5er62zZv2+PeA6jkwtXM4yxJ2rmvFaT8GTVG54O1+cC9
+YcPClVLLkN17JOVFAOjWkDG6SrG2QIwUs3MIrlaYbpvlO5lHstc+k5uZzOVBCtIPGi9Gk8do1bFb
+8qro3laZLzafOZk8zSyx2jawKgUeMVKM5hc2FQbi4aui+dJyO4b5K5mislByDKu6e7VJvlzdNogM
+j0InFqQXFbZjddu/YWL0lN/Q9kXP5X/6+z+ZvewVwtO/4zVeoiZrzGRX5eVq5t3Wbx76jKL/dB4j
+Rgt/jtsqYC8uk2VdZPl9vlZdtqlVcgs1s4v8M6tkm8O9cMgd0k8ZIEZrXx9KJtdhJ/njvjzHp3+H
+aXldWdh5bT/5cnXvVkZy3ZVQgKTeY7T8rmV+q7ZidttbiTlMtzdhl0PaG3xh/239FN4ESKatYK2i
+IP2OrmN09ZCk/Iicj+Dg6vryCN7rKrn5WSVqvJ/CmwCFNWzDAOAFuo7RyPU8uCb0lFJi74bpts10
+QYkaf7o17VSg+fWqitaZgvQjBvgdtx2IwSg8ZUHotsPCrk7Z++nfwrbbqSBVt5ucO55+7N10Iq7z
+A2aAGJ3qk3Q1Ma/9Hg8f9wejrfZ7Ce70rE7yPe9J7vGVdwPmK/e0ud+yLdjLL6jlPxbdPqXrSf2s
+qq5ctaytSTOPhpZttiMs6bxkmr/Xc6S6PGvKn+l5llk4MbcvzNbOT56t1cLk4cZPmzFidAq8pFS+
+7d7mycFsNzzcKrNJ7U6b0/C6PN3uYrWj5D9XF7xVV+MG6ypM+6+niBgmRg8dPskJLrDPa65BVqsR
+kt1mvt5cop71aKt8R7PMyv+GeUCy2VNWh1lynQPvM1KMZqIwfrU/q4fac2bvJmzmDNyr4NoC8azV
+V+Uy5eph+Tni3QDT/NcbKUannSQtn4n3nMJTcSaWlK7BZaT35OneLsrL1ZIeMhteIXOYNVxlGcJg
+MTqlVshXVV6Rx6ZJF1UZmUjd21fyFA2WqHfm6XbvqzFMZama/PrVwXp4FC2PvZ+fH3dL32S8GJ1i
+K+QjKbx1z8lQWKUeTngbMvG2W6glY5jNgylM1XwnhT2UKzkyf/dfcmM4Q8boFHv6GUnhpUcKitqZ
+e+HNxKp+HilR9wYzNaXq3n+9tGjNPIASpkMbNUank5K0ee89TMqaS8W98rawQHt2yr+1V2lWpWq+
+q4Z+qhbPCdOhDRyjUyANg9VoDxm6FHlef1hmZkrXHqb8SclytSFVk80ij4n2njIJ06GNHaNTU5LO
+7duStLcMXTklUks23IuDTkrUpWQUtqXqXstkh7WHijAd1PAxOlUery+Yy5drjtSSO6HlT7RK9niz
+bbnanKqZPqfUD2GvIF01szRqICOFQl5JwCXbnBvBQ+RsW8Btt2o71fv/+UzXp1j5IXfpMCIip1JV
+4/7Pqd7HVy7/s85PlE7Mx/5/5SsnnqglP8Pyxj2In+p3zn4uCqbMt1bYQ1znR8sbJvV/MlP7qqXR
+yc2nLn+RZx3H29IyOfHcu+9ZPozffy9B33b1PvE1Id26sxqtG9nt3hOjU+wlpb3D/Ypz4Nz4O8Vq
+SMlIzfwokkGc32Nvq6ag2atidDr7VdHm1VSHO6rt83QlT1SS64QySh5MZbZ6a56+uCDlz9tidHr0
+JaV5v1NnWVC1hjwTZ+X1ZsOS0oZNoAcvjNEpcP0/JYLnGe5TEdD24k1JMdhwS3S7yeFlpq2q7ZmC
+9N3eGaPTGUlau+Fqq9vK0rbQ3PZQu9WyeCysHxseMb1+ys8LvDZGp9hLSrXJktzRRWVpfKH4qp/4
+8Brqx9op/OhTfgXpi705RqdYTTqdtFY0WJbGi829Di86pZvzsXBs75vyM7qXx+gUe1X0rIl5eSif
+Hprbnm9LnMiN1OYStec8VZC+1ftjdCo+fNsm5uUnxjaUrwvN5fAu6rlK7Y3UvQg+bN/J98unfCJG
+p3AhsFeW1vZZ9XQlouc0aY7IqeD76vwWqoL0lb4So4dKXhhdNYs80L/o/bae0zMpXnXuNXYLldt8
+KEYzhUBkYt48mKr95t0cE9trQNVVoaTx6R02dLu3SfxXryB9mc/9Os96cf6UtaXN/czbLv954q8y
+HzeRb6H5cV8/3V40kyCj85j6UDX6Z1sLRNaWVm249wirobzdu1G7bZl5Mpbpv/Oj9lnBCU1VY91O
+I1y3Phej0+ZdmtOfOzX0Uz6SzB73Tu/MToG4L8boFLs/tdywakHo4SOsfJvgK5vNPQB5H43RKfaq
+aG1XhTvKLKvafrHBuc+1gD/fjdGpflaeCaCLJvhX1I9nDRX48+kYnU4t0Pa6auj86qRTlsKJ/vP0
+ALpQsh6+dmJetVVyX1dn3N9Q+38MCp0To//IZ0pVGg4UT39hPcRQoVtfn9QvnTsrb9uweasId0sh
+QjW6dlZ11vbu/FP3K+eydJQ6GvqhGk1YVmfBXKsq9Hp45rNcIbD8CrBHjKYFn2W3LdF/3HzZ2C7a
+X7a5fVzQNTGa0/zC+3VL9O+XeXO/zwHDzTo9dXtz1qczxD+p7wZv+swIrrM9SHr4xJNHqEaLxG+S
+Zvrp/yjZ03C/ooePC9LtKd0mL6JVV9bXXIbFaKmSCX7J0dn/6qKzrhm8253VaN3IbmfBU4X8YvXy
+w2LZj8CC0YnRaskkbX5xXobC6MRoi4Fe92zjDVEoJ0YbmZgDf8RoyIsn5gpSKCRGo14/wQfyxOgJ
+lp/r8fRYzqQghRJi9DRvDdOXfTtwOsvvT1b+Ys8oN1WXNekQA4abidFL9P+qUpX5u5CnsCVGr7L8
+4M7XhI48hS0xeq2BPmx0KzPsVZ5e9IEUfXY74q+SSw15eo9oW5b2n62FI+z5U4iu6NYzt/t1fqao
+Rm/yyjn+N8U/MfYF15Kbuy3s8yli9FbLMAXewbrRB6z+2BEwNDEKECJGH+NVS3gHMUpa/wsJoBNi
+9EkKUngBMQoQIkbZpVKGEtaNPqzPz8+fh+TdeTgkRsnxWSRwSIyylqyOV3kqTGEmRp/X1bz+cCQm
++7DSy9n7cQPF6Lb9dYOhZ8nPvnr8E08e0fv4vqOHY6VtDD2cPLq9v9s7r6CPnxp5JvX8o4ccZyB3
+VqN1I7uddaO98EYTDEqMduTBv8+sFIVmYrQv8x+7v3OnMhQixGiPTPBhIB4xdeqev3RvLT3EidF+
+XfrHmZcBalL/AtcdJwN1+xQx2rtz33Hy9hGcTowOID7Bz6dnV2+jwnDE6Bjyf5k5k4CF+StJoZkY
+HclezGUe65cnoySFNmL0DWQfPEiM8n8NBelfIVy1yrW8cZ/dumixYhLH2mGSLpPlg8ePNyPu1/lh
+JkZJSCapxVKQZFJPzscLTyihGiXNe6JQSIwChPiEJ4AQMQoQIkYBQsQoQIgYBQgRowAhYhQgRIwC
+hIhRgBAxChAiRgFCxChAiBgFCBGjACFiFCBEjAKEiFGAEDEKECJGAULEKECIGAUIEaMAIWIUIESM
+AoSIUYAQMQoQIkYBQsQoQIgYBQgRowAhYhQgRIwChIhRgBAxChAiRgFCxChAiBgFCBGjACFiFCDk
+f0MpqFgKlqXyAAAAAElFTkSuQmCC
+">
+
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[5]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="n">Chem</span><span class="o">.</span><span class="n">SanitizeMol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt output_prompt">
+    Out[5]:</div>
+<div class="box-flex1 output_subarea output_pyout">
+
+
+<pre>
+rdkit.Chem.rdmolops.SanitizeFlags.SANITIZE_NONE
+</pre>
+
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[6]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_pyerr">
+<pre>
+<span class="ansired">---------------------------------------------------------------------------</span>
+<span class="ansired">ValueError</span>                                Traceback (most recent call last)
+<span class="ansigreen">&lt;ipython-input-6-2ae14fafa41a&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">----&gt; 1</span><span class="ansired"> </span>Chem<span class="ansiblue">.</span>MolToSmiles<span class="ansiblue">(</span>mol<span class="ansiblue">)</span><span class="ansiblue"></span>
+
+<span class="ansired">ValueError</span>: Too many rings open at once. SMILES cannot be generated.</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="further-work">Further work</h3>
-<ul>
-<li><p>Tidy up the code</p></li>
-<li><p>Proper installer</p></li>
-<li>Proper API documentation
-<ul>
-<li>Hopefully the notebooks show how things work, but proper Pythonic documentation is still needed</li>
-</ul></li>
-<li><p>Improve the rule set, neutralisation algorithm and salt dictionary</p></li>
-<li>Better (optional) logging of what each module has done to a molecule...
-<ul>
-<li>Verbose logging may be turned on, but this output can't (easily) be used programmatically</li>
-<li>The <strong><code>rules</code></strong> module can return a list of what rules have been applied</li>
-<li>Other modules cannot do anything equivalent as yet.</li>
-</ul></li>
-</ul>
+<h3 id="the-sanity_check-function">The <code>sanity_check</code> function</h3>
+<p>A simple way of dealing with these issues...</p>
 </div>
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="acknowledgements">Acknowledgements</h3>
-<ul>
-<li><p>This work was funded by the <a target="_blank" href="http://www.imi.europa.eu/content/etox">IMI eTOX</a> project.</p></li>
-<li><p>The salt dictionary used is based on that used in the ChEMBL database; this was compiled by L.J. Bellis, A. Hersey and others and was in turn was based on that used in <a href="http://www.ama-assn.org//ama/pub/physician-resources/medical-science/united-states-adopted-names-council/naming-guidelines/organic-radicals-counterions-solvent-molecules-used.page">USAN</a> nomenclature.</p></li>
-<li><p>Some of the standardisation rules were inspired by those used in the <a href="http://www.inchi-trust.org/home">InChI</a> software.</p></li>
-<li><p>This project is built using the <a href="http://www.rdkit.org/">RDKit</a> chemistry toolkit.</p></li>
-</ul>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[12]:
 </div>
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="licensing">Licensing</h3>
-<p>This code is released under the <a href="http://opensource.org/licenses/apache2.0.php">Apache 2.0</a> license. Copyright [2014] is retained by the <a href="http://www.ebi.ac.uk">EMBL-EBI</a>.</p>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">standardise.utils</span> <span class="kn">import</span> <span class="n">sanity_check</span>
+</pre></div>
+
 </div>
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="contact-details">Contact details</h3>
-<p>Please sent bug reports and suggestions for improvements to <a href="mailto:francis@ebi.ac.uk">Francis Atkinson</a>.</p>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[13]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="n">sanity_check</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_pyerr">
+<pre>
+<span class="ansired">---------------------------------------------------------------------------</span>
+<span class="ansired">StandardiseException</span>                      Traceback (most recent call last)
+<span class="ansigreen">&lt;ipython-input-13-89b5903ccb0b&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">----&gt; 1</span><span class="ansired"> </span>sanity_check<span class="ansiblue">(</span>mol<span class="ansiblue">)</span><span class="ansiblue"></span>
+
+<span class="ansigreen">/usr/local/lib/python2.7/site-packages/standardise/utils.py</span> in <span class="ansicyan">sanity_check</span><span class="ansiblue">(mol)</span>
+<span class="ansigreen">     39</span>     <span class="ansigreen">except</span> ValueError <span class="ansigreen">as</span> err<span class="ansiblue">:</span><span class="ansiblue"></span>
+<span class="ansigreen">     40</span> <span class="ansiblue"></span>
+<span class="ansigreen">---&gt; 41</span><span class="ansired">         </span><span class="ansigreen">raise</span> StandardiseException<span class="ansiblue">(</span><span class="ansiblue">&quot;sanity_check&quot;</span><span class="ansiblue">)</span><span class="ansiblue"></span>
+<span class="ansigreen">     42</span> <span class="ansiblue"></span>
+<span class="ansigreen">     43</span> <span class="ansired"># sanity_check</span><span class="ansiblue"></span><span class="ansiblue"></span>
+
+<span class="ansired">StandardiseException</span>: Molecule failed sanity check</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 </body>
 </html>
