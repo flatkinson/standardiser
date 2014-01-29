@@ -8,7 +8,7 @@ PATH=../../bin:$PATH
 wc -l actor.smi
   418667 actor.smi
 
-standardiser.py -r actor.smi 1> standardiser.log 2>&1
+PYTHONPATH=../.. standardiser.py -r actor.smi 1> standardiser.log 2>&1
 
 rules_applied.py
 

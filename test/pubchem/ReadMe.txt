@@ -11,7 +11,7 @@ subset2.py pubchem.smi 0.02
 wc -l pubchem_002.smi
   946643 pubchem_002.smi
 
-standardiser.py -r pubchem_002.smi 1> standardiser.log 2>&1
+PYTHHONPATH=../.. standardiser.py -r pubchem_002.smi 1> standardiser.log 2>&1
 
 rules_applied.py
 
