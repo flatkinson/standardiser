@@ -89,7 +89,7 @@ def apply_rule(mol, rule, verbose=False):
     Please see the IPython Notebook 'issue_01' for an explanation of why things are done this way.
     """
 
-    if verbose: logger.debug("apply_rule> applying rule {} '{}'...".format(rule["n"], rule["name"]))
+    if verbose: logger.debug("apply_rule> applying rule {n} '{name}'...".format(n=rule["n"], name=rule["name"]))
 
     mols = [mol]
 
@@ -97,7 +97,7 @@ def apply_rule(mol, rule, verbose=False):
 
     for n_pass in range(1, max_passes+1):
 
-        if verbose: logging.debug("apply_rule> starting pass {}...".format(n_pass))
+        if verbose: logging.debug("apply_rule> starting pass {n}...".format(n=n_pass))
 
         products = {}
 
@@ -123,7 +123,7 @@ def apply_rule(mol, rule, verbose=False):
 
             changed = True
 
-            if (verbose): logging.debug("apply_rule> there are {} products: will continue".format(len(products.values())))
+            if (verbose): logging.debug("apply_rule> there are {n} products: will continue".format(n=len(products.values())))
 
             mols = products.values() # Update list of mols
 
@@ -133,7 +133,7 @@ def apply_rule(mol, rule, verbose=False):
 
             return mols[0] if changed else None
 
-    logging.debug("apply_rule {} '{}'> maximum number of passes reached; current number of mols is {}".format(rule["n"], rule["name"], len(mols)))
+    logging.debug("apply_rule {n} '{name}'> maximum number of passes reached; current number of mols is {m}".format(n=rule["n"], name=rule["name"], m=len(mols)))
 
     return mols[0]
 
@@ -147,13 +147,13 @@ def apply(mol, first_only=False, verbose=False, output_rules_applied=None):
     Apply all rules to the input molecule.
     """
 
-    logger.debug("apply> mol = '{}'".format(Chem.MolToSmiles(mol)))
+    logger.debug("apply> mol = '{smi}'".format(smi=Chem.MolToSmiles(mol)))
 
     rules_applied = []
 
     for n_pass in range(1, max_passes+1):
 
-        logger.debug("apply> starting pass {}...".format(n_pass))
+        logger.debug("apply> starting pass {n}...".format(n=n_pass))
 
         n_hits_for_pass = 0
 
@@ -163,7 +163,7 @@ def apply(mol, first_only=False, verbose=False, output_rules_applied=None):
 
             if product:
 
-                logger.info("rule {} '{}' applied on pass {}".format(rule["n"], rule["name"], n_pass))
+                logger.debug("rule {n} '{name}' applied on pass {m}".format(n=rule["n"], name=rule["name"], m=n_pass))
 
                 mol = product
 
@@ -175,7 +175,7 @@ def apply(mol, first_only=False, verbose=False, output_rules_applied=None):
 
         if product and first_only: break
 
-        logger.debug("...total of {} hits in pass: {}".format(n_hits_for_pass, "will continue..." if n_hits_for_pass else "finished."))
+        logger.debug("...total of {n} hits in pass: {m}".format(n=n_hits_for_pass, m="will continue..." if n_hits_for_pass else "finished."))
 
         if n_hits_for_pass == 0: break
 
@@ -203,7 +203,7 @@ def demo(old_mol):
 
             new_mol = products[0][0]
 
-            logger.info("rule {} '{}' applied".format(rule['n'], rule['name']))
+            logger.debug("rule {n} '{name}' applied".format(n=rule['n'], name=rule['name']))
 
             break
 

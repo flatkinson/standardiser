@@ -56,7 +56,7 @@ class Molfile(dict):
 
         self.__dict__.update(data)
 
-        self.name = data.get("Name") or data.get("name") or data.get("molregno") or "mol_{:04d}".format(self.__class__.n_mols)
+        self.name = data.get("Name") or data.get("name") or data.get("molregno") or "mol_{n:04d}".format(n=self.__class__.n_mols)
 
     def __getitem__(self, key):
 

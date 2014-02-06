@@ -70,7 +70,7 @@ counts = dict((name, 0) for name in error_names + ["read", "standardised"]) # py
 
 input_type = os.path.splitext(config.infile)[1] # sdf or smi
 
-logging.info("Input type = '{}'".format(input_type))
+logging.info("Input type = '{in_type}'".format(in_type=input_type))
 
 if input_type == ".sdf": # Read/write SDF...
 
@@ -83,7 +83,7 @@ if input_type == ".sdf": # Read/write SDF...
 
         counts["read"] += 1
 
-        logging.info(">>> Starting mol '{}'...".format(original.name))
+        logging.info(">>> Starting mol '{name}'...".format(name=original.name))
 
         ok = True
 
@@ -101,27 +101,27 @@ if input_type == ".sdf": # Read/write SDF...
 
         except standardise.StandardiseException as err:
 
-            logging.warn(">>> {} for '{}'".format(errors[err.name], original.name))
+            logging.warn(">>> {error} for '{name}'".format(error=errors[err.name], name=original.name))
 
             counts[err.name] += 1
 
-            errfile.write("{}>  <n>\n{}\n\n<error>\n{}\n\n$$$$\n".format(original.molblock, counts["read"], errors[err.name]))
+            errfile.write("{mol}>  <n>\n{nread}\n\n<error>\n{error}\n\n$$$$\n".format(mol=original.molblock, nread=counts["read"], error=errors[err.name]))
 
             ok = False
 
         if ok:
 
-            logging.info("Mol '{}' OK".format(original.name))
+            logging.info("Mol '{name}' OK".format(name=original.name))
 
             counts["standardised"] += 1
 
             if config.output_rules_applied:
 
-                outfile.write("{}>  <n>\n{}\n\n<rules_applied>\n{}\n\n$$$$\n".format(parent, counts["read"], ','.join(str(x) for x in rules_applied)))
+                outfile.write("{mol}>  <n>\n{nread}\n\n<rules_applied>\n{rules}\n\n$$$$\n".format(mol=parent, nread=counts["read"], rules=','.join(str(x) for x in rules_applied)))
 
             else:
 
-                outfile.write("{}>  <n>\n{}\n\n$$$$\n".format(parent, counts["read"]))
+                outfile.write("{mol}>  <n>\n{nread}\n\n$$$$\n".format(mol=parent, nread=counts["read"]))
 
         if counts["read"] % 100 == 0: logging.info("...done: {read} read, {standardised} OK...".format(**counts))
 
@@ -130,7 +130,7 @@ else: # Read/write (tab-seperated) SMILES + name...
     infile = csv.reader(open(config.infile), delimiter="\t")
 
     outfile = csv.writer(open("standardised.smi", "w"), delimiter="\t")
-    errfile = csv.writer(open("error.smi", "w"), delimiter="\t")
+    errfile = csv.writer(open("errors.smi", "w"), delimiter="\t")
 
     for original in infile:
 
@@ -138,7 +138,7 @@ else: # Read/write (tab-seperated) SMILES + name...
 
         smiles, name = original
 
-        logging.info(">>> Starting mol '{}'...".format(name))
+        logging.info(">>> Starting mol '{name}'...".format(name=name))
 
         ok = True
 
@@ -156,7 +156,7 @@ else: # Read/write (tab-seperated) SMILES + name...
 
         except standardise.StandardiseException as err:
 
-            logging.warn(">>> {} for mol '{}'".format(errors[err.name], name))
+            logging.warn(">>> {error} for mol '{name}'".format(error=errors[err.name], name=name))
 
             counts[err.name] += 1
 
@@ -166,7 +166,7 @@ else: # Read/write (tab-seperated) SMILES + name...
 
         if ok:
 
-            logging.info("Mol '{}' OK".format(name))
+            logging.info("Mol '{name}' OK".format(name=name))
 
             counts["standardised"] += 1
 

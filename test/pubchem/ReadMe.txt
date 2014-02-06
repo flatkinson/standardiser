@@ -1,18 +1,16 @@
 # Structures from PubChem
 # ftp://ftp.ncbi.nlm.nih.gov/pubchem/Compound/
 
-PATH=../../bin:$PATH
-
 wc -l pubchem.smi
  47332186 pubchem.smi
 
-subset2.py pubchem.smi 0.02
+../../bin/subset2.py pubchem.smi 0.02
 
 wc -l pubchem_002.smi
   946643 pubchem_002.smi
 
-PYTHHONPATH=../.. standardiser.py -r pubchem_002.smi 1> standardiser.log 2>&1
+PYTHONPATH=../.. ../../bin/standardiser.py -r pubchem_002.smi 1> standardiser.log 2>&1
 
-rules_applied.py
+../../rules_applied.py
 
 # See notebook 'analysis.ipynb' 
