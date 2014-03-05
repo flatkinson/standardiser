@@ -13,7 +13,7 @@ except ImportError:
     from setuptools import setup
 setup(
     name='standardiser',
-    version='0.1.5',
+    version='0.1.6',
     author='Francis Atkinson',
     author_email='francis@ebi.ac.uk',
     description='Provides a simple way of standardising molecules as a prelude to e.g. molecular modelling exercises.',
@@ -22,7 +22,8 @@ setup(
     entry_points={
         'console_scripts': [
             'standardiser=standardiser.bin.standardiser:main']},
-    packages=['standardiser'],
+    packages=['standardiser',
+              'standardiser.bin'],
     long_description=open('ReadMe.txt').read(),
     package_data={
         'standardiser': ['bin/*', 'data/*', 'docs/*', 'knime/*', 'test/*',],
