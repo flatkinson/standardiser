@@ -31,7 +31,7 @@ from collections import defaultdict
 
 from rdkit import Chem
 
-from .utils import StandardiseException, sanity_check
+from standardiser.utils import StandardiseException, sanity_check
 
 ########################################################################
 
