@@ -29,8 +29,8 @@ import csv, json
 
 from rdkit import Chem
 
-from standardise import standardise, SDF
-from standardise.utils import errors
+from standardiser import standardise, SDF
+from standardiser.utils import errors
 
 ########################################################################
 # 
