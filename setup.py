@@ -13,13 +13,15 @@ except ImportError:
     from setuptools import setup
 setup(
     name='standardiser',
-    version='0.1.4',
+    version='0.1.5',
     author='Francis Atkinson',
     author_email='francis@ebi.ac.uk',
     description='Provides a simple way of standardising molecules as a prelude to e.g. molecular modelling exercises.',
     url='https://www.ebi.ac.uk/chembldb/index.php/ws',
     license='Apache License, Version 2.0',
-    scripts=['standardiser/bin/standardiser.py'],
+    entry_points={
+        'console_scripts': [
+            'standardiser=standardiser.bin.standardiser:main']},
     packages=['standardiser'],
     long_description=open('ReadMe.txt').read(),
     package_data={
