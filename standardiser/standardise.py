@@ -26,9 +26,9 @@ import logging; logger = logging.getLogger(__name__)
 
 from rdkit import Chem
 
-from . import break_bonds, neutralise, rules, unsalt
+from standardiser import break_bonds, neutralise, rules, unsalt
 
-from .utils import StandardiseException, sanity_check, timeout
+from standardiser.utils import StandardiseException, sanity_check, timeout
 
 ########################################################################
 #

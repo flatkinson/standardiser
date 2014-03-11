@@ -38,7 +38,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Geometry import rdGeometry
 
-from .utils import StandardiseException
+from standardiser.utils import StandardiseException
 
 ########################################################################
 
