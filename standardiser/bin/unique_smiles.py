@@ -17,7 +17,7 @@ with open("actor.csv") as infile:
 
 with open("actor.smi", "w") as outfile:
 
-    writer = csv.writer(outfile, "w"), delimiter="\t")
+    writer = csv.writer(outfile, "w", delimiter="\t")
 
     for smiles, names in unique.iteritems():
 
