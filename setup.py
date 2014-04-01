@@ -13,7 +13,7 @@ except ImportError:
     from setuptools import setup
 setup(
     name='standardiser',
-    version='0.1.6',
+    version='0.1.7',
     author='Francis Atkinson',
     author_email='francis@ebi.ac.uk',
     description='Provides a simple way of standardising molecules as a prelude to e.g. molecular modelling exercises.',
