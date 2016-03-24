@@ -1,0 +1,21 @@
+<style>
+.rule_demo th {text-align: center;}
+</style>
+
+<table class="rule_demo">
+	<tr>
+		<th>Original</th>
+		<th>Transformed</th>
+	</tr>
+	<tr>
+		<td><img src="data:image/png;base64,{{old_img}}"></td>
+        <td>
+        {% if new_img is not none %}   
+            <img src="data:image/png;base64,{{new_img}}">
+        {% else %}
+
+        {%endif %}
+        </td>
+	</tr>
+</table>
+</table>

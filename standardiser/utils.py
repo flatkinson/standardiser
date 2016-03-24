@@ -16,9 +16,20 @@
 # 
 ####################################################################################################
 
-"""Utilities for standardise package"""
+"""
+Utilities for standardise package
+"""
 
-########################################################################
+####################################################################################################
+
+from functools import wraps
+import errno
+import os
+import signal
+
+from rdkit import Chem
+
+####################################################################################################
 
 # Error types...
 
@@ -46,8 +57,6 @@ class StandardiseException(Exception):
 # 
 # See e.g. PubChem CIDs 128221 or 20643358 for examples of things that fail
 
-from rdkit import Chem
-
 def sanity_check(mol):
 
     try:
@@ -67,11 +76,6 @@ def sanity_check(mol):
 # Time-out long running operation, as this usually indicates a problem with the molecules
 # 
 # http://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish
-
-from functools import wraps
-import errno
-import os
-import signal
 
 def timeout(seconds=2):
     
@@ -103,6 +107,6 @@ def timeout(seconds=2):
 
 # timeout
 
-########################################################################
+####################################################################################################
 # End
-########################################################################
+####################################################################################################

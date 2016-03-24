@@ -1,0 +1,24 @@
+<style>
+.rules_table { 
+    border-spacing: 10px;
+    border-collapse: separate;
+}
+
+.monospace {font-family: "Courier New", Courier, monospace;}
+</style>
+
+<table class="rules_table">
+	<tr>
+		<th>N</th>
+		<th>Name</th>
+		<th>SMARTS</th>
+	</tr>
+
+	{% for rule in rule_set %}
+	    <tr>
+		    <td>{{rule['n']}}</td>
+		    <td><a href="#{{rule['tag']}}">{{rule['name']}}</a></td>
+		    <td class="monospace">{{rule['SMARTS']}}</td>
+	    </tr>
+	{% endfor %}
+</table>

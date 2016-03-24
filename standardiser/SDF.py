@@ -22,7 +22,11 @@ written to a file for later inspection if RDKit cannot build a molecule from it.
 nothing if they cannot build the molecule, so the molblock cannot easily be saved.
 """
 
+####################################################################################################
+
 import re
+
+####################################################################################################
 
 def readFile(filename):
 
@@ -66,3 +70,6 @@ class Molfile(dict):
 
         open(name + ".mol", "w").write(self.original)
 
+####################################################################################################
+# End
+####################################################################################################

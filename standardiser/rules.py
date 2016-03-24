@@ -1,4 +1,4 @@
-####################################################################################################
+################################################################################################################################
 # 
 # Copyright [2014] EMBL - European Bioinformatics Institute
 # 
@@ -14,17 +14,16 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 # 
-####################################################################################################
+################################################################################################################################
 
 """
 Module to apply rule-based standardisations.
 """
 
-########################################################################
+####################################################################################################
 
-# Module imports...
-
-from __future__ import print_function
+from __future__ import print_function, division, absolute_import
+import six
 
 import logging
 logger = logging.getLogger(__name__)
@@ -32,35 +31,52 @@ logger = logging.getLogger(__name__)
 import os
 import re
 import csv
-from itertools import ifilterfalse
+from six.moves import filterfalse
 
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Geometry import rdGeometry
 
-from standardiser.utils import StandardiseException
+from .utils import StandardiseException
 
-########################################################################
+####################################################################################################
 
 # Module configuration...
 
-rules_file_name = "rules.dat"
+base_rules_file_name = "base"
 
 data_dir_name = "data"
 
 max_passes = 10
 
-########################################################################
+####################################################################################################
 
-# Module initialization...
+# Module data...
+# See bottom of file for module initialisation code (i.e. after functions are defined)
 
-with open(os.path.join(os.path.dirname(__file__), data_dir_name, rules_file_name)) as rules_file:
+rule_set = []
 
-    reader = csv.reader(ifilterfalse(lambda x: re.match(r"^\s*(?:#|$)", x), rules_file), delimiter="\t") # SMARTS and name, tab-seperated
+####################################################################################################
 
-    rule_set = [{"n": n, "SMARTS": x[0], "rxn": AllChem.ReactionFromSmarts(x[0]), "name": x[1]} for n, x in enumerate(reader, 1)]
+def load_rule_set(rules_file_name):
 
-########################################################################
+    with open(os.path.join(os.path.dirname(__file__), data_dir_name, rules_file_name + '_rules.dat')) as rules_file:
+
+        reader = csv.reader(filterfalse(lambda x: re.match(r"^\s*(?:#|$)", x), rules_file), delimiter="\t") # SMARTS and name, tab-seperated
+
+        rule_set = [{"n": n, "SMARTS": x[0], "rxn": AllChem.ReactionFromSmarts(x[0]), "name": x[1]} for n, x in enumerate(reader, 1)]
+
+    return rule_set
+
+# load_rule_set
+
+def add_rule_set(rules_file_name):
+
+    rule_set.extend(load_rule_set(rules_file_name))
+
+# add_rule_set
+
+######
 
 def setAllHsExplicit(mol):
 
@@ -123,9 +139,9 @@ def apply_rule(mol, rule, verbose=False):
 
             changed = True
 
-            if (verbose): logging.debug("apply_rule> there are {n} products: will continue".format(n=len(products.values())))
+            mols = list(products.values()) # Update list of mols
 
-            mols = products.values() # Update list of mols
+            if verbose: logging.debug("apply_rule> there are {} products: will continue".format(len(mols)))
 
         else:
 
@@ -191,6 +207,8 @@ def demo(old_mol):
 
     """
     Utility function for illustrating the application of rules.
+
+    See also companion module rules_demo.py
     """
 
     new_mol = None
@@ -224,8 +242,7 @@ def demo(old_mol):
     old_match = old_mol.GetSubstructMatch(Chem.MolFromSmarts(old_pat))
     new_match = new_mol.GetSubstructMatch(Chem.MolFromSmarts(new_pat))
 
-    #@ coord_map = {new_idx: rdGeometry.Point2D(conf.GetAtomPosition(old_idx).x, conf.GetAtomPosition(old_idx).y) for old_idx, new_idx in zip(old_match, new_match)}
-    coord_map = dict((new_idx, rdGeometry.Point2D(conf.GetAtomPosition(old_idx).x, conf.GetAtomPosition(old_idx).y)) for old_idx, new_idx in zip(old_match, new_match))  # python2.6-compatible
+    coord_map = {new_idx: rdGeometry.Point2D(conf.GetAtomPosition(old_idx).x, conf.GetAtomPosition(old_idx).y) for old_idx, new_idx in zip(old_match, new_match)}
 
     AllChem.Compute2DCoords(new_mol, clearConfs=True, coordMap=coord_map, canonOrient=False)
 
@@ -233,6 +250,12 @@ def demo(old_mol):
 
 # demo
 
-########################################################################
+####################################################################################################
+
+# Module initialization...
+
+add_rule_set(base_rules_file_name)
+
+####################################################################################################
 # End
-########################################################################
+####################################################################################################

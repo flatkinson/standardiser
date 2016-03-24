@@ -26,7 +26,7 @@ setup(
               'standardiser.bin'],
     long_description=open('ReadMe.txt').read(),
     package_data={
-        'standardiser': ['bin/*', 'data/*', 'docs/*', 'knime/*', 'test/*',],
+        'standardiser': ['bin/*', 'data/*', 'docs/*'],
         },
     classifiers=['Development Status :: 2 - Pre-Alpha',
                  'Environment :: Console',
