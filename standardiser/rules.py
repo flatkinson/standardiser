@@ -25,8 +25,8 @@ Module to apply rule-based standardisations.
 from __future__ import print_function, division, absolute_import
 import six
 
-import logging
-logger = logging.getLogger(__name__)
+import make_logger
+logger = make_logger.run(__name__)
 
 import os
 import re
@@ -60,7 +60,7 @@ rule_set = []
 
 def load_rule_set(rules_file_name):
 
-    with open(os.path.join(os.path.dirname(__file__), data_dir_name, rules_file_name + '_rules.dat')) as rules_file:
+    with open(os.path.join(os.path.dirname(__file__), data_dir_name, "rules_{}.dat".format(rules_file_name))) as rules_file:
 
         reader = csv.reader(filterfalse(lambda x: re.match(r"^\s*(?:#|$)", x), rules_file), delimiter="\t") # SMARTS and name, tab-seperated
 
@@ -70,9 +70,17 @@ def load_rule_set(rules_file_name):
 
 # load_rule_set
 
-def add_rule_set(rules_file_name):
+def add_rule_set(rules_file_name, prepend=False):
 
-    rule_set.extend(load_rule_set(rules_file_name))
+    global rule_set
+
+    if prepend:
+
+        rule_set = load_rule_set(rules_file_name) + rule_set
+
+    else:
+
+        rule_set = rule_set + load_rule_set(rules_file_name)
 
 # add_rule_set
 
@@ -113,7 +121,7 @@ def apply_rule(mol, rule, verbose=False):
 
     for n_pass in range(1, max_passes+1):
 
-        if verbose: logging.debug("apply_rule> starting pass {n}...".format(n=n_pass))
+        if verbose: logger.debug("apply_rule> starting pass {n}...".format(n=n_pass))
 
         products = {}
 
@@ -141,15 +149,15 @@ def apply_rule(mol, rule, verbose=False):
 
             mols = list(products.values()) # Update list of mols
 
-            if verbose: logging.debug("apply_rule> there are {} products: will continue".format(len(mols)))
+            if verbose: logger.debug("apply_rule> there are {} products: will continue".format(len(mols)))
 
         else:
 
-            if (verbose): logging.debug("apply_rule> there were no products: will return")
+            if (verbose): logger.debug("apply_rule> there were no products: will return")
 
             return mols[0] if changed else None
 
-    logging.debug("apply_rule {n} '{name}'> maximum number of passes reached; current number of mols is {m}".format(n=rule["n"], name=rule["name"], m=len(mols)))
+    logger.debug("apply_rule {n} '{name}'> maximum number of passes reached; current number of mols is {m}".format(n=rule["n"], name=rule["name"], m=len(mols)))
 
     return mols[0]
 

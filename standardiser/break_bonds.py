@@ -22,14 +22,14 @@ Break bonds to Group I and II metals
 
 ####################################################################################################
 
-import logging
-logger = logging.getLogger(__name__)
+import make_logger
+logger = make_logger.run(__name__)
 
 from collections import defaultdict
 
 from rdkit import Chem
 
-from standardiser.utils import StandardiseException, sanity_check
+from .utils import StandardiseException, sanity_check
 
 ####################################################################################################
 
@@ -77,8 +77,16 @@ def apply(mol):
 
             charge_added[j] -= charge_incr
 
-    sanity_check(mol)
-    
+    try:
+
+        sanity_check(mol)
+
+    except StandardiseException as err:
+
+        logger.debug("Molecule failed sanity check")
+
+        raise
+
     logger.debug("Broke {n} bonds to Group I and II metals".format(n=n_broken))
 
     return mol

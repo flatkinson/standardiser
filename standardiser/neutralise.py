@@ -22,29 +22,34 @@ Neutralise charges
 
 ####################################################################################################
 
-import logging
-logger = logging.getLogger(__name__)
+import make_logger
+logger = make_logger.run(__name__)
 
 import copy
 
 from rdkit import Chem
 
-from standardiser.utils import StandardiseException, sanity_check
+from .utils import StandardiseException, sanity_check
 
 ####################################################################################################
 
 # Module configuration...
 
+pos_smarts    = "[+!H0!$(*~[-])]"
+quat_smarts   = "[+H0!$(*~[-])]"
+neg_smarts    = "[-!$(*~[+H0])]"
+acid_smarts   = "[$([O-][C,P,S]=O),$([n-]1nnnc1),$(n1[n-]nnc1)]"
+acid_h_smarts = "[$([OH][C,P,S]=O),$([n-]1nnnc1),$(n1[n-]nnc1)]"
+
 ####################################################################################################
 
 # Module initialization...
 
-pos_pat = Chem.MolFromSmarts("[+!H0!$(*~[-])]")
-quat_pat = Chem.MolFromSmarts("[+H0!$(*~[-])]")
-neg_pat = Chem.MolFromSmarts("[-!$(*~[+H0])]")
-acid_pat = Chem.MolFromSmarts("[$([O-][C,P,S]=O),$([n-]1nnnc1),$(n1[n-]nnc1)]")
-
-acid_h_pat = Chem.MolFromSmarts("[$([OH][C,P,S]=O),$([n-]1nnnc1),$(n1[n-]nnc1)]")
+pos_pat    = Chem.MolFromSmarts(pos_smarts)
+quat_pat   = Chem.MolFromSmarts(quat_smarts)
+neg_pat    = Chem.MolFromSmarts(neg_smarts)
+acid_pat   = Chem.MolFromSmarts(acid_smarts)
+acid_h_pat = Chem.MolFromSmarts(acid_h_smarts)
 
 ####################################################################################################
 
@@ -153,7 +158,15 @@ def apply(mol, balance_quat_surplus=False):
 
     # Done...
 
-    sanity_check(mol)
+    try:
+
+        sanity_check(mol)
+
+    except StandardiseException as err:
+
+        logger.debug("Molecule failed sanity check")
+
+        raise
 
     logger.debug("Overall H balance: {sign}{n}; formal charge: {chg}".format(sign="+" if h_added > 0 else "", n=h_added, chg=formal_charge(mol)))
 

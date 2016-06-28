@@ -22,14 +22,14 @@ Apply standardisation procedure
 
 ####################################################################################################
 
-import logging
-logger = logging.getLogger(__name__)
+import make_logger
+logger = make_logger.run(__name__)
 
 from rdkit import Chem
 
-from standardiser import break_bonds, neutralise, rules, unsalt
+from . import break_bonds, neutralise, rules, unsalt
 
-from standardiser.utils import StandardiseException, sanity_check, timeout
+from .utils import StandardiseException, sanity_check, timeout
 
 ####################################################################################################
 #
@@ -43,8 +43,13 @@ from standardiser.utils import StandardiseException, sanity_check, timeout
 
 ####################################################################################################
 
-@timeout()
-def apply(input_mol, output_rules_applied=None): 
+# Unix signals such as SIGALRM are not unavailable on Windows, so the timeout facility cannot be used.
+# Use of signals such as SIGALRM is also impossible whe running under mod_wsgi.
+# https://github.com/GrahamDumpleton/mod_wsgi-docs/blob/master/configuration-directives/WSGIRestrictSignal.rst
+# https://github.com/GrahamDumpleton/mod_wsgi-docs/blob/master/developer-guides/tips-and-tricks.rst
+
+### @timeout()
+def apply(input_mol, output_rules_applied=None, verbose=False): 
 
     # Get input molecule...
 
@@ -73,7 +78,15 @@ def apply(input_mol, output_rules_applied=None):
 
             input_type = 'sdf'
 
-    sanity_check(mol)
+    try:
+
+        sanity_check(mol)
+
+    except StandardiseException as err:
+
+        logger.debug("Molecule failed sanity check")
+
+        raise
 
     ######
 
@@ -97,7 +110,7 @@ def apply(input_mol, output_rules_applied=None):
 
         logger.debug("3) Applying rules...")
 
-        frag = rules.apply(frag, output_rules_applied=output_rules_applied)
+        frag = rules.apply(frag, output_rules_applied=output_rules_applied, verbose=verbose)
 
         logger.debug("4) Attempting to neutralise (second pass)...")
 
@@ -138,6 +151,28 @@ def apply(input_mol, output_rules_applied=None):
         return Chem.MolToSmiles(parent, isomericSmiles=True)
 
 # apply
+
+######
+
+# Check for availability of timeout before enabling...
+
+import platform
+
+if platform.system() == 'Windows':
+
+    logger.warning("Running under Windows: must disable use of timeout")
+
+else:
+
+    try:
+
+        from mod_wsgi import version
+
+        logger.warning("Running under mod_wsgi: must disable use of timeout")
+
+    except:
+
+        apply = timeout()(apply)
 
 ####################################################################################################
 # End

@@ -22,8 +22,8 @@ Remove salt/solvates
 
 ####################################################################################################
 
-import logging
-logger = logging.getLogger(__name__)
+import make_logger
+logger = make_logger.run(__name__)
 
 import os
 import csv
