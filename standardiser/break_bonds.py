@@ -22,7 +22,7 @@ Break bonds to Group I and II metals
 
 ####################################################################################################
 
-import make_logger
+from . import make_logger
 logger = make_logger.run(__name__)
 
 from collections import defaultdict
@@ -45,7 +45,7 @@ bonds_to_break = [(Chem.MolFromSmarts(smarts), charge_incr) for smarts, charge_i
 
 ####################################################################################################
 
-def apply(mol):
+def run(mol):
 
     charge_added = defaultdict(int)
 
@@ -91,7 +91,7 @@ def apply(mol):
 
     return mol
 
-# apply
+# run
 
 ####################################################################################################
 # End

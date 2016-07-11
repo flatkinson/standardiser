@@ -25,7 +25,7 @@ Module to apply rule-based standardisations.
 from __future__ import print_function, division, absolute_import
 import six
 
-import make_logger
+from . import make_logger
 logger = make_logger.run(__name__)
 
 import os
@@ -165,23 +165,25 @@ def apply_rule(mol, rule, verbose=False):
 
 ######
 
-def apply(mol, first_only=False, verbose=False, output_rules_applied=None):
+def run(mol, first_only=False, verbose=False, output_rules_applied=None):
 
     """
     Apply all rules to the input molecule.
     """
 
-    logger.debug("apply> mol = '{smi}'".format(smi=Chem.MolToSmiles(mol)))
+    logger.debug("mol = '{smi}'".format(smi=Chem.MolToSmiles(mol)))
 
     rules_applied = []
 
     for n_pass in range(1, max_passes+1):
 
-        logger.debug("apply> starting pass {n}...".format(n=n_pass))
+        logger.debug("starting pass {n}...".format(n=n_pass))
 
         n_hits_for_pass = 0
 
         for rule in rule_set:
+
+            logger.debug("Trying rule {n} '{name}' on pass {m}...".format(n=rule["n"], name=rule["name"], m=n_pass))
 
             product = apply_rule(mol, rule, verbose)
 
@@ -207,7 +209,7 @@ def apply(mol, first_only=False, verbose=False, output_rules_applied=None):
 
     return mol
 
-# apply
+# run
 
 ######
 

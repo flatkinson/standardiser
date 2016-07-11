@@ -4,12 +4,6 @@ from __future__  import print_function, division, absolute_import
 import six
 
 import warnings
-import logging
-
-# NB These steps together seem to be required to get logging from modules working, but I don't know why yet...
-if six.PY3: from importlib import reload
-reload(logging) 
-logging.basicConfig(level=logging.INFO, format="[%(asctime)s %(levelname)-8s] %(message)s", datefmt="%Y/%b/%d %H:%M:%S")
 
 import sys
 import re

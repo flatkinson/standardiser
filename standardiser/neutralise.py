@@ -22,7 +22,7 @@ Neutralise charges
 
 ####################################################################################################
 
-import make_logger
+from . import make_logger
 logger = make_logger.run(__name__)
 
 import copy
@@ -75,7 +75,7 @@ def set_all_h_explicit(mol):
 
 ######
 
-def apply(mol, balance_quat_surplus=False):
+def run(mol, balance_quat_surplus=False):
 
     mol = copy.deepcopy(mol)
 
@@ -172,7 +172,7 @@ def apply(mol, balance_quat_surplus=False):
 
     return mol
 
-# apply
+# run
 
 ####################################################################################################
 # End

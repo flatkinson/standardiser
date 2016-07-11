@@ -22,7 +22,7 @@ Remove salt/solvates
 
 ####################################################################################################
 
-import make_logger
+from . import make_logger
 logger = make_logger.run(__name__)
 
 import os

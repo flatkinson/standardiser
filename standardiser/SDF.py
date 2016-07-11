@@ -38,29 +38,29 @@ def readFile(filename):
 
         if line == "$$$$\n":
 
-            molfile = "".join(lines)
+            molblock = "".join(lines)
 
             lines = []
 
-            yield Molfile(molfile)
+            yield Molfile(molblock)
 
 class Molfile(dict):
 
     n_mols = 0
 
-    def __init__(self, molfile):
+    def __init__(self, molblock):
 
         self.__class__.n_mols += 1
 
-        self.original = molfile
+        self.original = molblock
 
-        self.molblock, data = re.search("\A(.*\nM\s+END\s*\n)(.*)\$\$\$\$", molfile, re.DOTALL).groups()
+        self.molblock, data = re.search("\A(.*\nM\s+END\s*\n)(.*)\$\$\$\$", molblock, re.DOTALL).groups()
 
         data = dict(re.findall("^>\s+<(.*?)>(?:\s*\(\d+\))?\s*\n(.*?)\s*\n\n", data, re.DOTALL | re.MULTILINE))
 
-        self.__dict__.update(data)
+        self.name = re.match('^(\w+)?\n', molblock).group(1) or data.get("Name") or data.get("name") or data.get("molregno") or "mol_{n:04d}".format(n=self.__class__.n_mols)
 
-        self.name = data.get("Name") or data.get("name") or data.get("molregno") or "mol_{n:04d}".format(n=self.__class__.n_mols)
+        self.__dict__.update(data)
 
     def __getitem__(self, key):
 

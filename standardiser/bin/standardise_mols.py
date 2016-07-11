@@ -24,20 +24,17 @@
 ####################################################################################################
 
 from __future__ import print_function, division, absolute_import
-import six
 
 import os
 import sys
 import argparse
-import logging
 
+import re
 import csv
 import json
 from collections import Counter
 
-from rdkit import Chem
-
-from standardiser import standardise, SDF
+from standardiser import standardise, SDF, make_logger
 from standardiser.utils import errors
 
 ####################################################################################################
@@ -53,34 +50,32 @@ def main():
 
     ######
 
-    # Options and arguments...
+    # Options, arguments and logging...
 
     argparser = argparse.ArgumentParser(description="Standardise compounds")
 
-    argparser.add_argument("-V", "--verbose", action="store_true", help="enable verbose logging")
+    argparser.add_argument("-V", "--verbose", action="store_true", help="enable verbose logger")
     argparser.add_argument("-r", "--output_rules_applied", action="store_true", help="enable output of rules applied")
 
     argparser.add_argument("infile", help="Input file (SDF or SMILES)")
 
     config = argparser.parse_args()
 
+    logger = make_logger.run(__name__)
+
     ######
 
     # Initialisation...
 
-    logging.basicConfig(level=logging.DEBUG if config.verbose else logging.INFO, format="[%(asctime)s %(levelname)-8s] %(message)s", datefmt="%Y/%b/%d %H:%M:%S")
+    rule_names = ["{:02d} {}".format(x['n'], x['name']) for x in standardise.rules.rule_set]
 
-    ########################################################################
-
-    # Initialise...
-
-    counts = Counter(list(errors.keys()) + ['read', 'standardised']) 
-
-    # Input type...
+    counts = Counter({x: 0 for x in list(errors.keys()) + ['read', 'standardised']}) 
 
     input_type = os.path.splitext(config.infile)[1] # sdf or smi
 
-    logging.info("Input type = '{in_type}'".format(in_type=input_type))
+    ######
+
+    logger.info("Input type = '{in_type}'".format(in_type=input_type))
 
     if input_type == ".sdf": # Read/write SDF...
 
@@ -93,7 +88,7 @@ def main():
 
             counts["read"] += 1
 
-            logging.info(">>> Starting mol '{name}'...".format(name=original.name))
+            logger.info(">>> Starting mol '{name}'...".format(name=original.name))
 
             ok = True
 
@@ -103,37 +98,41 @@ def main():
 
                     rules_applied = []
 
-                    parent = standardise.apply(original.molblock, output_rules_applied=rules_applied)
+                    parent = standardise.run(original.molblock, output_rules_applied=rules_applied)
 
                 else:
 
-                    parent = standardise.apply(original.molblock)
+                    parent = standardise.run(original.molblock)
 
             except standardise.StandardiseException as err:
 
-                logging.warn(">>> {error} for '{name}'".format(error=errors[err.name], name=original.name))
+                logger.warn(">>> {error} for '{name}'".format(error=errors[err.name], name=original.name))
 
                 counts[err.name] += 1
 
-                errfile.write("{mol}>  <n>\n{nread}\n\n<error>\n{error}\n\n$$$$\n".format(mol=original.molblock, nread=counts["read"], error=errors[err.name]))
+                errfile.write("{mol}>  <n>\n{nread}\n\n>  <error>\n{error}\n\n$$$$\n".format(mol=original.molblock, nread=counts["read"], error=errors[err.name]))
 
                 ok = False
 
             if ok:
 
-                logging.info("Mol '{name}' OK".format(name=original.name))
+                logger.info("Mol '{name}' OK".format(name=original.name))
 
                 counts["standardised"] += 1
 
+                parent = re.sub(r'^\w*\n', original.name + '\n', parent)
+
                 if config.output_rules_applied:
 
-                    outfile.write("{mol}>  <n>\n{nread}\n\n<rules_applied>\n{rules}\n\n$$$$\n".format(mol=parent, nread=counts["read"], rules=','.join(str(x) for x in rules_applied)))
+                    rules_applied = ';'.join(rule_names[x-1] for x in rules_applied) if rules_applied else ''
+
+                    outfile.write("{mol}>  <n>\n{nread}\n\n<rules_applied>\n{rules}\n\n$$$$\n".format(mol=parent, nread=counts["read"], rules=rules_applied))
 
                 else:
 
                     outfile.write("{mol}>  <n>\n{nread}\n\n$$$$\n".format(mol=parent, nread=counts["read"]))
 
-            if counts["read"] % 100 == 0: logging.info("...done: {read} read, {standardised} OK...".format(**counts))
+            if counts["read"] % 100 == 0: logger.info("...done: {read} read, {standardised} OK...".format(**counts))
 
     else: # Read/write (tab-seperated) SMILES + name...
 
@@ -148,7 +147,7 @@ def main():
 
             smiles, name = original
 
-            logging.info(">>> Starting mol '{name}'...".format(name=name))
+            logger.info(">>> Starting mol '{name}'...".format(name=name))
 
             ok = True
 
@@ -158,15 +157,15 @@ def main():
 
                     rules_applied = []
 
-                    parent = standardise.apply(smiles, output_rules_applied=rules_applied)
+                    parent = standardise.run(smiles, output_rules_applied=rules_applied)
 
                 else:
 
-                    parent = standardise.apply(smiles)
+                    parent = standardise.run(smiles)
 
             except standardise.StandardiseException as err:
 
-                logging.warn(">>> {error} for mol '{name}'".format(error=errors[err.name], name=name))
+                logger.warn(">>> {error} for mol '{name}'".format(error=errors[err.name], name=name))
 
                 counts[err.name] += 1
 
@@ -176,27 +175,29 @@ def main():
 
             if ok:
 
-                logging.info("Mol '{name}' OK".format(name=name))
+                logger.info("Mol '{name}' OK".format(name=name))
 
                 counts["standardised"] += 1
 
                 if config.output_rules_applied:
 
-                    outfile.writerow([parent, name, smiles, ','.join(str(x) for x in rules_applied)])
+                    rules_applied = ';'.join(rule_names[x-1] for x in rules_applied) if rules_applied else ''
+
+                    outfile.writerow([parent, name, smiles, rules_applied])
 
                 else:
 
                     outfile.writerow([parent, name])
 
-            if counts["read"] % 100 == 0: logging.info("...done: {read} read, {standardised} OK...".format(**counts))
+            if counts["read"] % 100 == 0: logger.info("...done: {read} read, {standardised} OK...".format(**counts))
 
-    logging.info("Finished: {read} read, {standardised} OK in total.".format(**counts))
+    logger.info("Finished: {read} read, {standardised} OK in total.".format(**counts))
 
-    logging.info("Counts: " + json.dumps(counts, indent=4))
+    logger.info("Counts: " + json.dumps(counts, indent=4))
 
-    ########################################################################
-    # End
-    ########################################################################
+# main
+
+####################################################################################################
     
 if __name__ == '__main__':
     main()    

@@ -22,7 +22,7 @@ Apply standardisation procedure
 
 ####################################################################################################
 
-import make_logger
+from . import make_logger
 logger = make_logger.run(__name__)
 
 from rdkit import Chem
@@ -43,13 +43,26 @@ from .utils import StandardiseException, sanity_check, timeout
 
 ####################################################################################################
 
+def verbose():
+
+	"""
+	Turn on full debugging output.
+	"""
+
+	logger.setLevel(10) # DEBUG
+
+	for module in break_bonds, unsalt, neutralise, rules: module.logger.setLevel(10)
+
+####################################################################################################
+
 # Unix signals such as SIGALRM are not unavailable on Windows, so the timeout facility cannot be used.
-# Use of signals such as SIGALRM is also impossible whe running under mod_wsgi.
-# https://github.com/GrahamDumpleton/mod_wsgi-docs/blob/master/configuration-directives/WSGIRestrictSignal.rst
-# https://github.com/GrahamDumpleton/mod_wsgi-docs/blob/master/developer-guides/tips-and-tricks.rst
+# Use of signals such as SIGALRM is also impossible whe running under mod_wsgi...
+# 	https://github.com/GrahamDumpleton/mod_wsgi-docs/blob/master/configuration-directives/WSGIRestrictSignal.rst
+# 	https://github.com/GrahamDumpleton/mod_wsgi-docs/blob/master/developer-guides/tips-and-tricks.rst
+# Thus, the use of the global use of the timeout wrapper is disabled here and enabled selectively below.
 
 ### @timeout()
-def apply(input_mol, output_rules_applied=None, verbose=False): 
+def run(input_mol, output_rules_applied=None, verbose=False): 
 
     # Get input molecule...
 
@@ -94,7 +107,7 @@ def apply(input_mol, output_rules_applied=None, verbose=False):
 
     non_salt_frags = []
 
-    mol = break_bonds.apply(mol)
+    mol = break_bonds.run(mol)
 
     for n, frag in enumerate(Chem.GetMolFrags(mol, asMols=True), 1):
 
@@ -106,15 +119,15 @@ def apply(input_mol, output_rules_applied=None, verbose=False):
 
         logger.debug("2) Attempting to neutralise (first pass)...")
 
-        frag = neutralise.apply(frag)
+        frag = neutralise.run(frag)
 
         logger.debug("3) Applying rules...")
 
-        frag = rules.apply(frag, output_rules_applied=output_rules_applied, verbose=verbose)
+        frag = rules.run(frag, output_rules_applied=output_rules_applied, verbose=verbose)
 
         logger.debug("4) Attempting to neutralise (second pass)...")
 
-        frag = neutralise.apply(frag)
+        frag = neutralise.run(frag)
 
         logger.debug("5) Checking if frag is a salt/solvate...")
 
@@ -150,11 +163,11 @@ def apply(input_mol, output_rules_applied=None, verbose=False):
 
         return Chem.MolToSmiles(parent, isomericSmiles=True)
 
-# apply
+# run
 
 ######
 
-# Check for availability of timeout before enabling...
+# Check for availability of timeout before enabling (see above for details)...
 
 import platform
 
@@ -172,7 +185,7 @@ else:
 
     except:
 
-        apply = timeout()(apply)
+        run = timeout()(run)
 
 ####################################################################################################
 # End

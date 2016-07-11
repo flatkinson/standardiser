@@ -29,7 +29,7 @@ import signal
 
 from rdkit import Chem
 
-import make_logger
+from . import make_logger
 logger = make_logger.run(__name__)
 
 ####################################################################################################
