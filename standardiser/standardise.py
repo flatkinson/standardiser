@@ -43,15 +43,17 @@ from .utils import StandardiseException, sanity_check, timeout
 
 ####################################################################################################
 
-def verbose():
+def verbose(verbose=True):
 
-	"""
-	Turn on full debugging output.
-	"""
+    """
+    Turn full debugging output on or off.
+    """
 
-	logger.setLevel(10) # DEBUG
+    level = 10 if verbose else 20
 
-	for module in break_bonds, unsalt, neutralise, rules: module.logger.setLevel(10)
+    logger.setLevel(level)
+
+    for module in break_bonds, unsalt, neutralise, rules: module.logger.setLevel(level)
 
 ####################################################################################################
 
