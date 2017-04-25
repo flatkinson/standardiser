@@ -36,7 +36,8 @@
 [nH1r6!$(*1c(=O)aaaa1)!$(*1aac(=O)aa1):1]:[a:2]:[c:3]-[c:4]:[nX2r5:5]>>[nH0:1]:[*:2]:[*:3]:[*:4]:[nH1:5]	Fix heterocyclic tautomer 3
 [nH1r6!$(*1c(=O)aaaa1)!$(*1aac(=O)aa1):1]:[c:2]-[c:3]:[nX2r5:4]>>[nH0:1]:[*:2][*:3]:[nH1:4]	Fix heterocyclic tautomer 4
 
-[OH:1][C:2]=[C:3]>>[OH0:1]=[C:2][C:3]	Enol -> Ketone
+[OH:1][C:2]=[CH0:3]>>[OH0:1]=[C:2][CH1:3]	Enol -> Ketone 1
+[OH:1][C:2]=[CH1:3]>>[OH0:1]=[C:2][CH2:3]	Enol -> Ketone 2
 
 [N,O,P,S;-1:1]-[A+0:2]=[N,O,P,S;+1:3]>>[*-0:1]=[*:2]-[*+0:3]	Fix 1,3 charge-seperated systems (non-aromatic)
 [n,o,p,s;-1:1]:[a:2]=[N,O,P,S;+1:3]>>[*-0:1]:[*:2]-[*+0:3]	Fix 1,3 charge-seperated systems (aromatic 1)
