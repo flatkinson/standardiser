@@ -57,7 +57,8 @@ def main():
     argparser.add_argument("-V", "--verbose", action="store_true", help="enable verbose logger")
     argparser.add_argument("-r", "--output_rules_applied", action="store_true", help="enable output of rules applied")
 
-    argparser.add_argument("infile", help="Input file (SDF or SMILES)")
+    argparser.add_argument("-i", dest="infile", help="Input file (SDF or SMILES)")
+    argparser.add_argument("-o", dest="outfile", help="Output file")
 
     config = argparser.parse_args()
 
@@ -72,6 +73,8 @@ def main():
     counts = Counter({x: 0 for x in list(errors.keys()) + ['read', 'standardised']}) 
 
     input_type = os.path.splitext(config.infile)[1] # sdf or smi
+    outfile_basename = os.path.splitext(config.infile)[0]
+    outfile_ext      = os.path.splitext(config.infile)[1]
 
     ######
 
@@ -81,8 +84,8 @@ def main():
 
         infile = SDF.readFile(open(config.infile))
 
-        outfile = open("standardised.sdf", "w")
-        errfile = open("errors.sdf", "w")
+        outfile = open(config.outfile, "w")
+        errfile = open(outfile_basename + "_errors." + outfile_ext, "w")
 
         for original in infile:
 
@@ -137,9 +140,9 @@ def main():
     else: # Read/write (tab-seperated) SMILES + name...
 
         infile = csv.reader(open(config.infile), delimiter="\t")
-
-        outfile = csv.writer(open("standardised.smi", "w"), delimiter="\t")
-        errfile = csv.writer(open("errors.smi", "w"), delimiter="\t")
+        outfile = csv.writer(open(config.outfile, "w"), delimiter="\t")
+        errfile_name = outfile_basename + "_errors." + outfile_ext
+        errfile = csv.writer(open(errfile_name, "w"), delimiter="\t")
 
         for original in infile:
 
