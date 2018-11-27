@@ -21,7 +21,7 @@ setup(
     license='Apache License, Version 2.0',
     entry_points={
         'console_scripts': [
-            'standardiser=standardiser.bin.standardiser:main']},
+            'standardiser=standardiser.bin.standardise_mols:main']},
     packages=['standardiser',
               'standardiser.bin'],
     long_description=open('ReadMe.txt').read(),
