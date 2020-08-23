@@ -3,7 +3,8 @@ This is a tool designed to provide a simple way of standardising molecules as a 
 To install, download this project and ensure that Python can find the standardise/ directory. Note that RDKit must also be installed and accessible to Python.
 
 Or, install via pip:
-```
+
+```shell
 pip install standardiser
 ```
 
